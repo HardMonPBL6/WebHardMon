@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    # IP privada del servidor PostgreSQL en la nube privada a través de Tailscale
+    url: jdbc:postgresql://${DB_HOST:100.x.x.x}:${DB_PORT:5432}/${DB_NAME:telemetriadb}
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:secret}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  grafana:
+    # URL base de Grafana en la red privada
+    base-url: ${GRAFANA_URL:http://100.x.x.y:3000}
+    # Secret o API key si planeas integrar firma JWT o API access (opcional)
+    api-key: ${GRAFANA_API_KEY:default_key}
+
+server:
+  port: 8080 # Cloud Run utiliza el puerto 8080 por defecto

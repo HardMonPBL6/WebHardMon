@@ -1,0 +1,12 @@
+com\telemetria\web\config\DatabaseSeeder.class
+com\telemetria\web\repository\EmpresaRepository.class
+com\telemetria\web\service\GrafanaService.class
+com\telemetria\web\model\Administrador.class
+com\telemetria\web\repository\AdministradorRepository.class
+com\telemetria\web\WebServerlessApplication.class
+com\telemetria\web\controller\WebController.class
+com\telemetria\web\model\Licencia.class
+com\telemetria\web\security\SecurityConfig.class
+com\telemetria\web\security\AdminPrincipal.class
+com\telemetria\web\security\CustomUserDetailsService.class
+com\telemetria\web\model\Empresa.class
