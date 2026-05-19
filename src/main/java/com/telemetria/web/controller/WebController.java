@@ -18,10 +18,13 @@ public class WebController {
 
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
-        // En un proyecto real leerías el tenant del usuario (ej: Dashboard ID general)
-        // Para este ejemplo pasamos un dashboardUID ficticio
-        String grafanaUrl = grafanaService.buildDashboardUrl("dashboard-123", principal.getEmpresaId());
-        
+        String grafanaUrl = grafanaService.buildPublicDashboardUrl();
+        if (grafanaUrl == null) {
+            // En un proyecto real leerías el tenant del usuario (ej: Dashboard ID general)
+            // Para este ejemplo usamos el UID real de tu dashboard Grafana
+            grafanaUrl = grafanaService.buildDashboardUrl("ads2xlm", principal.getEmpresaId());
+        }
+
         model.addAttribute("grafanaIframeUrl", grafanaUrl);
         model.addAttribute("empresaNombre", principal.getEmpresaNombre());
         
