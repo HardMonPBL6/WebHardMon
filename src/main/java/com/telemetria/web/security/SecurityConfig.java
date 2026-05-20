@@ -18,10 +18,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/login").permitAll()
-                .anyRequest().authenticated()
-            )
+           .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/css/**", "/js/**", "/login").permitAll()
+            .requestMatchers("/internal/auth/grafana").permitAll()
+            .anyRequest().authenticated()
+        )
             .formLogin(form -> form
                 // .loginPage("/login")  // Custom login page si la creamos luego
                 .defaultSuccessUrl("/dashboard", true)

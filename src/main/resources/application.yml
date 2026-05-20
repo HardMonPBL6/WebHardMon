@@ -13,12 +13,11 @@ spring:
 
 app:
   grafana:
-    # URL base de Grafana local en desarrollo
-    base-url: ${GRAFANA_URL:http://localhost:3000}
-    # URL pública completa del dashboard (usa esta si compartes el dashboard públicamente)
-    public-url: ${GRAFANA_PUBLIC_URL:http://localhost:3000/public-dashboards/d3778ef775a8478ca8c070d19dbb8f5b}
-    # Secret o API key si planeas integrar firma JWT o API access (opcional)
-    api-key: ${GRAFANA_API_KEY:default_key}
-
+    base-url: ${GRAFANA_URL:/grafana}
+    dashboard-uid: ${GRAFANA_DASHBOARD_UID:ads2xlm}
+    api-key: ${GRAFANA_API_KEY:}
+  internal:
+    auth-token: ${INTERNAL_AUTH_TOKEN:change-me}
+    
 server:
   port: 8080 # Cloud Run utiliza el puerto 8080 por defecto
