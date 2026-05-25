@@ -7,15 +7,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class GrafanaService {
 
-    @Value("${app.grafana.base-url:/grafana}")
-    private String grafanaBaseUrl;
-
-    @Value("${app.grafana.dashboard-uid:ads2xlm}")
-    private String dashboardUid;
+    @Value("${app.grafana.dashboard-url}")
+    private String dashboardUrl;
 
     public String buildDashboardUrl(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El usuario autenticado no tiene empresa asociada");
+        }
+
         return UriComponentsBuilder
-                .fromPath(grafanaBaseUrl + "/d/" + dashboardUid + "/dash")
+                .fromUriString(dashboardUrl)
                 .queryParam("orgId", "1")
                 .queryParam("theme", "dark")
                 .queryParam("kiosk", "tv")

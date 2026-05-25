@@ -80,10 +80,72 @@
         </header>
 
         <!-- Main Body -->
-        <main class="flex-1 p-6 overflow-auto">
-            <div class="w-full h-full bg-darkPanel rounded-xl border border-gray-800 shadow-md overflow-hidden">
-                <iframe th:src="${grafanaIframeUrl}" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+        <main class="flex-1 p-6 overflow-auto space-y-6">
+            
+            <!-- KPI Cards Grid (Row 1) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <!-- Card 1: CPU Actual -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=1'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Card 2: RAM Actual -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=2'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Card 3: Disco Actual -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=3'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Card 4: Temperatura Actual -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=4'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Card 5: Bateria Actual -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=5'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Card 6: Portátiles Activos -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-36 p-1 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=6'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
             </div>
+
+            <!-- Detailed Charts Grid - Row 2 (CPU & RAM Trends) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- CPU Trend -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=7'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- RAM Trend -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=8'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+            </div>
+
+            <!-- Detailed Charts Grid - Row 3 (Disk & Temp Trends) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Disk Trend -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=9'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Temperature Trend -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=10'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+            </div>
+
+            <!-- Detailed Charts Grid - Row 4 (Battery Trend & Top CPU) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Battery Trend -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=11'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+                <!-- Top CPU Consumers -->
+                <div class="bg-darkPanel rounded-xl border border-gray-850 shadow-lg overflow-hidden h-96 p-2 hover:border-gray-700 transition-all duration-300">
+                    <iframe th:src="${grafanaIframeUrl} + '&panelId=12'" width="100%" height="100%" frameborder="0" class="w-full h-full"></iframe>
+                </div>
+            </div>
+
         </main>
     </div>
 </body>

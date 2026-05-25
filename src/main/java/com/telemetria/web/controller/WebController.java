@@ -18,16 +18,28 @@ public class WebController {
 
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
-        String grafanaUrl = grafanaService.buildDashboardUrl(principal.getEmpresaId());
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Long empresaId = principal.getEmpresaId();
+
+        String grafanaUrl = grafanaService.buildDashboardUrl(empresaId);
 
         model.addAttribute("grafanaIframeUrl", grafanaUrl);
         model.addAttribute("empresaNombre", principal.getEmpresaNombre());
+        model.addAttribute("empresaId", empresaId);
 
         return "layout";
     }
 
-    @GetMapping({"/", "/licencias"})
+    @GetMapping("/")
     public String root() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/licencias")
+    public String licencias() {
         return "redirect:/dashboard";
     }
 }

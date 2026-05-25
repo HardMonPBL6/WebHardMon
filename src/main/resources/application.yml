@@ -1,9 +1,9 @@
 spring:
   datasource:
-    # IP privada del servidor PostgreSQL en la nube privada a través de Tailscale
     url: jdbc:postgresql://${DB_HOST:100.x.x.x}:${DB_PORT:5432}/${DB_NAME:telemetriadb}
     username: ${DB_USER:admin}
     password: ${DB_PASS:secret}
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,11 +13,9 @@ spring:
 
 app:
   grafana:
-    base-url: ${GRAFANA_URL:/grafana}
-    dashboard-uid: ${GRAFANA_DASHBOARD_UID:ads2xlm}
-    api-key: ${GRAFANA_API_KEY:}
+    dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/grafana/public-dashboards/8fe987f683794be4aa6898cd23e5f988}
   internal:
     auth-token: ${INTERNAL_AUTH_TOKEN:change-me}
-    
+
 server:
-  port: 8080 # Cloud Run utiliza el puerto 8080 por defecto
+  port: 8080
