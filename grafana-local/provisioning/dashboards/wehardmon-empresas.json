@@ -40,6 +40,60 @@
           "text": "All",
           "value": "$__all"
         }
+      },
+      {
+        "name": "ram",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "query": "label_values(processor_info{empresa=~\"$empresa\"}, ram)",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "storage",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "query": "label_values(processor_info{empresa=~\"$empresa\"}, storage)",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "portatil",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "victoriametrics"
+        },
+        "query": "label_values(processor_info{empresa=~\"$empresa\", ram=~\"$ram\", storage=~\"$storage\"}, portatil)",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        }
       }
     ]
   },
@@ -61,7 +115,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg(cpu_usage_percent{empresa=~\"$empresa\"})",
+          "expr": "avg(cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
           "legendFormat": "CPU medio",
           "range": true,
           "datasource": {
@@ -126,7 +180,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg(ram_usage_percent{empresa=~\"$empresa\"})",
+          "expr": "avg(ram_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
           "legendFormat": "RAM media",
           "range": true,
           "datasource": {
@@ -191,7 +245,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg(disk_usage_percent{empresa=~\"$empresa\"})",
+          "expr": "avg(disk_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
           "legendFormat": "Disco medio",
           "range": true,
           "datasource": {
@@ -256,7 +310,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg(temperature_celsius{empresa=~\"$empresa\"})",
+          "expr": "avg(temperature_celsius{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
           "legendFormat": "Temp media",
           "range": true,
           "datasource": {
@@ -321,7 +375,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg(battery_percent{empresa=~\"$empresa\"})",
+          "expr": "avg(battery_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
           "legendFormat": "Batería",
           "range": true,
           "datasource": {
@@ -384,7 +438,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count(count by (portatil) (cpu_usage_percent{empresa=~\"$empresa\"}))",
+          "expr": "count(count by (portatil) (cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}))",
           "legendFormat": "Portátiles",
           "range": true,
           "datasource": {
@@ -449,8 +503,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg by (empresa) (cpu_usage_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "{{empresa}}",
+          "expr": "avg by (portatil) (cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -515,8 +569,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg by (empresa) (ram_usage_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "{{empresa}}",
+          "expr": "avg by (portatil) (ram_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -581,8 +635,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg by (empresa) (disk_usage_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "{{empresa}}",
+          "expr": "avg by (portatil) (disk_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -647,8 +701,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg by (empresa) (temperature_celsius{empresa=~\"$empresa\"})",
-          "legendFormat": "{{empresa}}",
+          "expr": "avg by (portatil) (temperature_celsius{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -713,8 +767,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "avg by (empresa) (battery_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "{{empresa}}",
+          "expr": "avg by (portatil) (battery_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -779,8 +833,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(10, avg by (empresa) (cpu_usage_percent{empresa=~\"$empresa\"}))",
-          "legendFormat": "{{empresa}}",
+          "expr": "topk(10, avg by (portatil) (cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}))",
+          "legendFormat": "{{portatil}}",
           "range": true,
           "datasource": {
             "type": "prometheus",

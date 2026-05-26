@@ -14,8 +14,6 @@ spring:
 app:
   grafana:
     dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/grafana/public-dashboards/8fe987f683794be4aa6898cd23e5f988}
-  internal:
-    auth-token: ${INTERNAL_AUTH_TOKEN:change-me}
 
 server:
   port: 8080

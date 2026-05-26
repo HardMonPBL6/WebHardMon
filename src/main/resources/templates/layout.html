@@ -53,6 +53,62 @@
                 <!-- Fallback en caso de que no haya principal validado de Thymeleaf -->
                 Compañía: <span class="text-white" sec:authentication="name" th:text="${empresaNombre ?: 'Acme Corp'}">Acme Corp</span>
             </div>
+
+            <!-- Selectores de Dispositivo y Rango de Tiempo (Filtros en el Cliente) -->
+            <div class="flex items-center gap-4 bg-gray-900/40 rounded-xl px-4 py-2 border border-gray-800/60 shadow-inner">
+                <!-- Selector de RAM -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">RAM:</span>
+                    <select id="selectRam" onchange="filterLaptopsAndUpdate()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value="All">Todas</option>
+                        <option value="8">8 GB</option>
+                        <option value="16">16 GB</option>
+                        <option value="32">32 GB</option>
+                        <option value="64">64 GB</option>
+                    </select>
+                </div>
+
+                <!-- Divisor visual -->
+                <div class="h-4 w-px bg-gray-800"></div>
+
+                <!-- Selector de Almacenamiento -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Disco:</span>
+                    <select id="selectStorage" onchange="filterLaptopsAndUpdate()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value="All">Todos</option>
+                        <option value="256">256 GB</option>
+                        <option value="512">512 GB</option>
+                        <option value="1024">1024 GB (1 TB)</option>
+                        <option value="2048">2048 GB (2 TB)</option>
+                    </select>
+                </div>
+
+                <!-- Divisor visual -->
+                <div class="h-4 w-px bg-gray-800"></div>
+
+                <!-- Selector de Portátil -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Dispositivo:</span>
+                    <select id="selectPortatil" onchange="updateDashboard()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value="All">Todos los portátiles</option>
+                    </select>
+                </div>
+
+                <!-- Divisor visual -->
+                <div class="h-4 w-px bg-gray-800"></div>
+
+                <!-- Selector de Rango de Tiempo -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Rango:</span>
+                    <select id="selectTime" onchange="updateDashboard()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value="now-15m" selected>Últimos 15 minutos</option>
+                        <option value="now-1h">Última hora</option>
+                        <option value="now-24h">Últimas 24 horas</option>
+                        <option value="now-7d">Últimos 7 días</option>
+                        <option value="now-30d">Último mes</option>
+                    </select>
+                </div>
+            </div>
             
             <div class="flex items-center gap-4">
                 <!-- Notificaciones (Coming Soon) -->
@@ -148,5 +204,120 @@
 
         </main>
     </div>
+
+    <!-- Script de control dinámico del Dashboard (d-solo) -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const empresaId = [[${empresaId}]];
+        
+        // Datos deterministas para coincidir exactamente con seed-victoria.sh
+        const RAM_TOTAL_OPCIONES = [8, 16, 32, 64];
+        const STORAGE_TOTAL_OPCIONES = [256, 512, 1024, 2048];
+        const PROCESADORES = ["Intel_i5_1135G7", "Intel_i7_1165G7", "AMD_Ryzen_5_5600U", "AMD_Ryzen_7_5800U", "Apple_M1"];
+        
+        const laptops = [];
+        
+        // Generar y almacenar la lista completa de portátiles con sus características deterministas
+        for (let i = 1; i <= 100; i++) {
+            const calculatedEmpresaId = (i % 3) + 1;
+            if (calculatedEmpresaId === parseInt(empresaId)) {
+                const pcName = `PC-${empresaId}-${i}`;
+                const ram = RAM_TOTAL_OPCIONES[i % RAM_TOTAL_OPCIONES.length];
+                const storage = STORAGE_TOTAL_OPCIONES[i % STORAGE_TOTAL_OPCIONES.length];
+                const processor = PROCESADORES[i % PROCESADORES.length];
+                
+                laptops.push({
+                    name: pcName,
+                    ram: ram.toString(),
+                    storage: storage.toString(),
+                    processor: processor
+                });
+            }
+        }
+
+        // Generar dinámicamente la lista de portátiles en base a los filtros actuales
+        function populateLaptops() {
+            const selectPortatil = document.getElementById('selectPortatil');
+            const selectedRam = document.getElementById('selectRam').value;
+            const selectedStorage = document.getElementById('selectStorage').value;
+            const previousValue = selectPortatil.value;
+            
+            // Vaciar excepto el primero (Todos)
+            selectPortatil.innerHTML = '<option value="All">Todos los portátiles</option>';
+            
+            laptops.forEach(laptop => {
+                const matchesRam = selectedRam === 'All' || laptop.ram === selectedRam;
+                const matchesStorage = selectedStorage === 'All' || laptop.storage === selectedStorage;
+                
+                if (matchesRam && matchesStorage) {
+                    const option = document.createElement('option');
+                    option.value = laptop.name;
+                    option.textContent = `${laptop.name} (${laptop.processor}, ${laptop.ram}GB, ${laptop.storage >= 1024 ? (laptop.storage / 1024) + 'TB' : laptop.storage + 'GB'})`;
+                    selectPortatil.appendChild(option);
+                }
+            });
+            
+            // Intentar mantener el valor seleccionado previamente si aún existe en el listado filtrado
+            if ([...selectPortatil.options].some(opt => opt.value === previousValue)) {
+                selectPortatil.value = previousValue;
+            } else {
+                selectPortatil.value = 'All';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            populateLaptops();
+            updateDashboard();
+        });
+
+        // Llamado cuando cambian los filtros de RAM o Almacenamiento
+        function filterLaptopsAndUpdate() {
+            populateLaptops();
+            updateDashboard();
+        }
+
+        // Recarga todos los iframes con los nuevos filtros seleccionados
+        function updateDashboard() {
+            const timeValue = document.getElementById('selectTime').value;
+            const portatilValue = document.getElementById('selectPortatil').value;
+            const ramValue = document.getElementById('selectRam').value;
+            const storageValue = document.getElementById('selectStorage').value;
+            
+            const iframes = document.querySelectorAll('main iframe');
+            
+            iframes.forEach(iframe => {
+                let src = iframe.src;
+                let url = new URL(src);
+                
+                // Actualizar parámetros de rango temporal
+                url.searchParams.set('from', timeValue);
+                url.searchParams.set('to', 'now');
+                
+                // Actualizar parámetro de dispositivo
+                if (portatilValue === 'All') {
+                    url.searchParams.set('var-portatil', '$__all');
+                } else {
+                    url.searchParams.set('var-portatil', portatilValue);
+                }
+                
+                // Actualizar parámetros de RAM
+                if (ramValue === 'All') {
+                    url.searchParams.set('var-ram', '$__all');
+                } else {
+                    url.searchParams.set('var-ram', ramValue);
+                }
+                
+                // Actualizar parámetros de Almacenamiento
+                if (storageValue === 'All') {
+                    url.searchParams.set('var-storage', '$__all');
+                } else {
+                    url.searchParams.set('var-storage', storageValue);
+                }
+                
+                iframe.src = url.toString();
+            });
+        }
+        /*]]>*/
+    </script>
 </body>
 </html>

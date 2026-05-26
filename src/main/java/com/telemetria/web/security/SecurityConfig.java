@@ -20,7 +20,6 @@ public class SecurityConfig {
         http
            .authorizeHttpRequests(auth -> auth
             .requestMatchers("/css/**", "/js/**", "/login").permitAll()
-            .requestMatchers("/internal/auth/grafana").permitAll()
             .anyRequest().authenticated()
         )
             .formLogin(form -> form
