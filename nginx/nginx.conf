@@ -1,1 +1,0 @@
-# Deprecated - Nginx is no longer used in this project
