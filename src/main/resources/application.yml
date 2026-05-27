@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:100.x.x.x}:${DB_PORT:5432}/${DB_NAME:telemetriadb}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:telemetriadb}?sslmode=${DB_SSL_MODE:prefer}
     username: ${DB_USER:admin}
     password: ${DB_PASS:secret}
 
@@ -16,6 +16,8 @@ app:
     dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     empresa-dashboard-url: ${GRAFANA_EMPRESA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     ordenadores-dashboard-url: ${GRAFANA_ORDENADORES_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-ordenadores/webhardmon-ordenadores}
+  victoriametrics:
+    url: ${VICTORIA_METRICS_URL:http://localhost:8428}
 
 server:
   port: 8080

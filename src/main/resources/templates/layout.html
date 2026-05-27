@@ -36,16 +36,16 @@
             </span>
         </div>
         <nav class="flex-1 px-4 py-6 space-y-2">
-            <a th:href="@{/dashboard/empresa}" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600/10 text-blue-400 transition-colors">
+            <a th:href="@{/dashboard/empresa}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'empresa'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 Empresa
             </a>
 
-            <a th:href="@{/dashboard/ordenadores}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+            <a th:href="@{/dashboard/ordenadores}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'ordenadores'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 Ordenadores
             </a>
-            <a th:href="@{/licencias}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors">
+            <a th:href="@{/licencias}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'licencias'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
                 Licencias
             </a>
@@ -240,29 +240,38 @@
         /*<![CDATA[*/
         const empresaId = [[${empresaId}]];
         const dashboardTipo = [[${dashboardTipo}]];
+        const portatilesVictoria = [[${portatiles}]];
         
-        // Datos deterministas para coincidir exactamente con seed-victoria.sh
+        // Fallback local para desarrollo: coincide con seed-victoria.sh si VictoriaMetrics no responde.
         const RAM_TOTAL_OPCIONES = [8, 16, 32, 64];
         const STORAGE_TOTAL_OPCIONES = [256, 512, 1024, 2048];
         const PROCESADORES = ["Intel_i5_1135G7", "Intel_i7_1165G7", "AMD_Ryzen_5_5600U", "AMD_Ryzen_7_5800U", "Apple_M1"];
         
         const laptops = [];
         
-        // Generar y almacenar la lista completa de portátiles con sus características deterministas
-        for (let i = 1; i <= 100; i++) {
-            const calculatedEmpresaId = (i % 3) + 1;
-            if (calculatedEmpresaId === parseInt(empresaId)) {
-                const pcName = `PC-${empresaId}-${i}`;
-                const ram = RAM_TOTAL_OPCIONES[i % RAM_TOTAL_OPCIONES.length];
-                const storage = STORAGE_TOTAL_OPCIONES[i % STORAGE_TOTAL_OPCIONES.length];
-                const processor = PROCESADORES[i % PROCESADORES.length];
-                
-                laptops.push({
-                    name: pcName,
-                    ram: ram.toString(),
-                    storage: storage.toString(),
-                    processor: processor
-                });
+        if (Array.isArray(portatilesVictoria) && portatilesVictoria.length > 0) {
+            portatilesVictoria.forEach(name => laptops.push({
+                name: name,
+                ram: '',
+                storage: '',
+                processor: 'detectado'
+            }));
+        } else {
+            for (let i = 1; i <= 100; i++) {
+                const calculatedEmpresaId = (i % 3) + 1;
+                if (calculatedEmpresaId === parseInt(empresaId)) {
+                    const pcName = `PC-${empresaId}-${i}`;
+                    const ram = RAM_TOTAL_OPCIONES[i % RAM_TOTAL_OPCIONES.length];
+                    const storage = STORAGE_TOTAL_OPCIONES[i % STORAGE_TOTAL_OPCIONES.length];
+                    const processor = PROCESADORES[i % PROCESADORES.length];
+                    
+                    laptops.push({
+                        name: pcName,
+                        ram: ram.toString(),
+                        storage: storage.toString(),
+                        processor: processor
+                    });
+                }
             }
         }
 
@@ -284,7 +293,11 @@
                 if (matchesRam && matchesStorage) {
                     const option = document.createElement('option');
                     option.value = laptop.name;
-                    option.textContent = `${laptop.name} (${laptop.processor}, ${laptop.ram}GB, ${laptop.storage >= 1024 ? (laptop.storage / 1024) + 'TB' : laptop.storage + 'GB'})`;
+                    if (laptop.ram && laptop.storage) {
+                        option.textContent = `${laptop.name} (${laptop.processor}, ${laptop.ram}GB, ${laptop.storage >= 1024 ? (laptop.storage / 1024) + 'TB' : laptop.storage + 'GB'})`;
+                    } else {
+                        option.textContent = laptop.name;
+                    }
                     selectPortatil.appendChild(option);
                 }
             });
@@ -343,7 +356,7 @@
                 url.searchParams.set('to', 'now');
 
                 if (dashboardTipo === 'ordenadores') {
-                    url.searchParams.set('var-portatil', portatilValue);
+                    url.searchParams.set('var-portatil', portatilValue === 'All' ? '.*' : portatilValue);
                 }
 
                 if (dashboardTipo === 'empresa') {
