@@ -20,19 +20,21 @@ do
   DISK=$(( 20 + RANDOM % 80 ))
   TEMP=$(( 35 + RANDOM % 55 ))
   BATTERY=$(( RANDOM % 100 ))
+  STRESS_SCORE=$(( (CPU * 35 + RAM * 25 + DISK * 20 + TEMP * 20) / 100 ))
 
   RAM_TOTAL=${RAM_TOTAL_OPCIONES[$(( i % ${#RAM_TOTAL_OPCIONES[@]} ))]}
   STORAGE_TOTAL=${STORAGE_TOTAL_OPCIONES[$(( i % ${#STORAGE_TOTAL_OPCIONES[@]} ))]}
   PROCESADOR=${PROCESADORES[$(( i % ${#PROCESADORES[@]} ))]}
 
   cat <<EOD | curl -s -X POST "$VM_URL" --data-binary @-
-cpu_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $CPU $TIMESTAMP
-ram_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $RAM $TIMESTAMP
-disk_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $DISK $TIMESTAMP
-temperature_celsius{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $TEMP $TIMESTAMP
-battery_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $BATTERY $TIMESTAMP
-ram_total_gb{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $RAM_TOTAL $TIMESTAMP
-storage_total_gb{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID"} $STORAGE_TOTAL $TIMESTAMP
+cpu_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $CPU $TIMESTAMP
+ram_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $RAM $TIMESTAMP
+disk_usage_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $DISK $TIMESTAMP
+temperature_celsius{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $TEMP $TIMESTAMP
+battery_percent{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $BATTERY $TIMESTAMP
+stress_score{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $STRESS_SCORE $TIMESTAMP
+ram_total_gb{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $RAM_TOTAL $TIMESTAMP
+storage_total_gb{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL",procesador="$PROCESADOR"} $STORAGE_TOTAL $TIMESTAMP
 processor_info{empresa="$EMPRESA_ID",portatil="$PORTATIL_ID",procesador="$PROCESADOR",ram="$RAM_TOTAL",storage="$STORAGE_TOTAL"} 1 $TIMESTAMP
 EOD
 
