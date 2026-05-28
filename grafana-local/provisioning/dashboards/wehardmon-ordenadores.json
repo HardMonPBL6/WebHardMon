@@ -7,7 +7,7 @@
   "graphTooltip": 1,
   "id": null,
   "uid": "webhardmon-ordenadores",
-  "title": "WebHardMon - Dashboard de ordenadores",
+  "title": "WebHardMon - Ordenagailuen panela",
   "tags": [
     "webhardmon",
     "telemetria",
@@ -38,7 +38,8 @@
           "selected": false,
           "text": "1",
           "value": "1"
-        }
+        },
+        "label": "Enpresa"
       },
       {
         "name": "portatil",
@@ -55,7 +56,8 @@
           "selected": false,
           "text": "PC-1-3",
           "value": "PC-1-3"
-        }
+        },
+        "label": "Ordenagailua"
       }
     ]
   },
@@ -63,7 +65,7 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "CPU actual",
+      "title": "CPU",
       "gridPos": {
         "x": 0,
         "y": 0,
@@ -123,7 +125,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "RAM actual",
+      "title": "RAM",
       "gridPos": {
         "x": 4,
         "y": 0,
@@ -183,7 +185,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "Disco actual",
+      "title": "Diskoa",
       "gridPos": {
         "x": 8,
         "y": 0,
@@ -197,7 +199,7 @@
       "targets": [
         {
           "expr": "avg(last_over_time(disk_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}[$__range]))",
-          "legendFormat": "Disco (%)",
+          "legendFormat": "Diskoa (%)",
           "refId": "A"
         }
       ],
@@ -243,7 +245,7 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "Temperatura actual",
+      "title": "Tenperatura",
       "gridPos": {
         "x": 12,
         "y": 0,
@@ -257,7 +259,7 @@
       "targets": [
         {
           "expr": "avg(last_over_time(temperature_celsius{empresa=~\"$empresa\", portatil=~\"$portatil\"}[$__range]))",
-          "legendFormat": "Temperatura (°C)",
+          "legendFormat": "Tenperatura (°C)",
           "refId": "A"
         }
       ],
@@ -303,7 +305,7 @@
     {
       "id": 5,
       "type": "gauge",
-      "title": "Batería actual",
+      "title": "Bateria",
       "gridPos": {
         "x": 16,
         "y": 0,
@@ -317,7 +319,7 @@
       "targets": [
         {
           "expr": "avg(last_over_time(battery_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}[$__range]))",
-          "legendFormat": "Batería (%)",
+          "legendFormat": "Bateria (%)",
           "refId": "A"
         }
       ],
@@ -361,7 +363,7 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "Stress score actual",
+      "title": "Estresa",
       "gridPos": {
         "x": 20,
         "y": 0,
@@ -375,7 +377,7 @@
       "targets": [
         {
           "expr": "avg(last_over_time(stress_score{empresa=~\"$empresa\", portatil=~\"$portatil\"}[$__range]))",
-          "legendFormat": "Stress score",
+          "legendFormat": "Estresa",
           "refId": "A"
         }
       ],
@@ -421,7 +423,7 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Histórico de CPU",
+      "title": "CPU",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -482,7 +484,7 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "Histórico de RAM",
+      "title": "RAM",
       "gridPos": {
         "x": 12,
         "y": 4,
@@ -543,7 +545,7 @@
     {
       "id": 9,
       "type": "timeseries",
-      "title": "Histórico de disco",
+      "title": "Diskoa",
       "gridPos": {
         "x": 0,
         "y": 12,
@@ -557,7 +559,7 @@
       "targets": [
         {
           "expr": "disk_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}",
-          "legendFormat": "Disco (%)",
+          "legendFormat": "Diskoa (%)",
           "refId": "A"
         }
       ],
@@ -604,7 +606,7 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "Histórico de temperatura",
+      "title": "Tenperatura",
       "gridPos": {
         "x": 12,
         "y": 12,
@@ -618,7 +620,7 @@
       "targets": [
         {
           "expr": "temperature_celsius{empresa=~\"$empresa\", portatil=~\"$portatil\"}",
-          "legendFormat": "Temperatura (°C)",
+          "legendFormat": "Tenperatura (°C)",
           "refId": "A"
         }
       ],
@@ -665,7 +667,7 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "Histórico de batería",
+      "title": "Bateria",
       "gridPos": {
         "x": 0,
         "y": 20,
@@ -679,7 +681,7 @@
       "targets": [
         {
           "expr": "battery_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}",
-          "legendFormat": "Batería (%)",
+          "legendFormat": "Bateria (%)",
           "refId": "A"
         }
       ],
@@ -726,7 +728,7 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "Histórico de stress score",
+      "title": "Estresa",
       "gridPos": {
         "x": 12,
         "y": 20,
@@ -740,7 +742,7 @@
       "targets": [
         {
           "expr": "stress_score{empresa=~\"$empresa\", portatil=~\"$portatil\"}",
-          "legendFormat": "Stress score",
+          "legendFormat": "Estresa",
           "refId": "A"
         }
       ],
@@ -784,7 +786,7 @@
     {
       "id": 13,
       "type": "table",
-      "title": "Información técnica del portátil",
+      "title": "Informazio teknikoa",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -798,7 +800,7 @@
       "targets": [
         {
           "expr": "last_over_time(processor_info{empresa=~\"$empresa\", portatil=~\"$portatil\"}[30d])",
-          "legendFormat": "Información técnica",
+          "legendFormat": "Info",
           "refId": "A"
         }
       ],
@@ -843,10 +845,10 @@
               "Value": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "procesador": "Procesador",
-              "ram": "RAM total (GB)",
-              "storage": "Almacenamiento total (GB)"
+              "portatil": "Ordenagailua",
+              "procesador": "Prozesadorea",
+              "ram": "RAM (GB)",
+              "storage": "Diskoa (GB)"
             }
           }
         }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="eu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebHardMon - Saioa hasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        darkPanel: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-darkBg text-gray-200 antialiased selection:bg-blue-600 selection:text-white">
+    <main class="min-h-screen grid lg:grid-cols-[1.1fr_0.9fr]">
+        <section class="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 p-12 items-center">
+            <div class="absolute inset-0 opacity-30">
+                <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-20 right-20 w-96 h-96 bg-indigo-600 rounded-full blur-3xl"></div>
+            </div>
+            <div class="relative max-w-xl">
+                <div class="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-4 py-2 text-sm text-blue-200 mb-8">
+                    Hardware monitorizazioa
+                </div>
+                <h1 class="text-5xl font-bold tracking-tight text-white leading-tight">WebHardMon kudeaketa-panela</h1>
+                <p class="mt-6 text-lg text-gray-300 leading-8">Enpresako ordenagailuen egoera, metrikak eta lizentziak modu seguruan kudeatzeko sarbidea.</p>
+                <div class="mt-10 grid grid-cols-3 gap-4 text-center">
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="text-2xl font-bold text-white">CPU</div>
+                        <div class="text-xs text-gray-400 mt-1">Metrikak</div>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="text-2xl font-bold text-white">RAM</div>
+                        <div class="text-xs text-gray-400 mt-1">Kontrola</div>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="text-2xl font-bold text-white">Liz.</div>
+                        <div class="text-xs text-gray-400 mt-1">Kudeaketa</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex items-center justify-center px-6 py-12">
+            <div class="w-full max-w-md">
+                <div class="mb-8 text-center lg:text-left">
+                    <div class="mx-auto lg:mx-0 w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30 mb-5">
+                        <span class="text-white font-bold text-xl">W</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white">Saioa hasi</h2>
+                    <p class="mt-2 text-sm text-gray-400">Sartu zure administratzaile-kontuarekin.</p>
+                </div>
+
+                <div th:if="${param.error}" class="mb-4 rounded-xl border border-red-700 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+                    Erabiltzailea edo pasahitza ez da zuzena.
+                </div>
+                <div th:if="${param.logout}" class="mb-4 rounded-xl border border-green-700 bg-green-950/40 px-4 py-3 text-sm text-green-200">
+                    Saioa ondo itxi da.
+                </div>
+
+                <form th:action="@{/login}" method="post" class="rounded-3xl border border-gray-800 bg-darkPanel/90 shadow-2xl shadow-black/30 p-7 space-y-5">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div>
+                        <label for="username" class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Erabiltzailea</label>
+                        <input id="username" name="username" type="text" autocomplete="username" required autofocus
+                               class="w-full rounded-xl border border-gray-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                               placeholder="adib. admin">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Pasahitza</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                               class="w-full rounded-xl border border-gray-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                               placeholder="Zure pasahitza">
+                    </div>
+
+                    <button type="submit" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
+                        Sartu panelera
+                    </button>
+                </form>
+
+                <p class="mt-6 text-center text-xs text-gray-500">Ez dago erabiltzaile-erregistrorik. Sarbidea administratzaileentzat bakarrik da.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -30,8 +30,8 @@ public class DatabaseSeeder {
                 adminRepo.save(admin);
                 
                 System.out.println("====== USUARIO DE PRUEBA CREADO ======");
-                System.out.println("Usuario: admin");
-                System.out.println("Contraseña: test");
+                System.out.println("Erabiltzailea: admin");
+                System.out.println("Pasahitza: test");
                 System.out.println("Empresa: Acme Corp");
                 System.out.println("======================================");
             }

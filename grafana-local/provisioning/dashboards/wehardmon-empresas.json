@@ -7,7 +7,7 @@
   "graphTooltip": 1,
   "id": null,
   "uid": "webhardmon-empresas",
-  "title": "WebHardMon - Telemetría por empresa",
+  "title": "WebHardMon - Enpresen araberako telemetria",
   "tags": [
     "webhardmon",
     "telemetria",
@@ -37,9 +37,10 @@
         "includeAll": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": "$__all"
-        }
+        },
+        "label": "Enpresa"
       },
       {
         "name": "ram",
@@ -55,9 +56,10 @@
         "includeAll": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": "$__all"
-        }
+        },
+        "label": "RAM"
       },
       {
         "name": "storage",
@@ -73,9 +75,10 @@
         "includeAll": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": "$__all"
-        }
+        },
+        "label": "Biltegiratzea"
       },
       {
         "name": "portatil",
@@ -91,9 +94,10 @@
         "includeAll": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": "$__all"
-        }
+        },
+        "label": "Ordenagailua"
       }
     ]
   },
@@ -101,7 +105,7 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "CPU medio actual",
+      "title": "Uneko batez besteko CPUa",
       "gridPos": {
         "x": 0,
         "y": 0,
@@ -116,7 +120,7 @@
         {
           "refId": "A",
           "expr": "avg(cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
-          "legendFormat": "CPU medio",
+          "legendFormat": "CPU batezbestekoa",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -166,7 +170,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "RAM media actual",
+      "title": "Uneko batez besteko RAMa",
       "gridPos": {
         "x": 4,
         "y": 0,
@@ -181,7 +185,7 @@
         {
           "refId": "A",
           "expr": "avg(ram_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
-          "legendFormat": "RAM media",
+          "legendFormat": "RAM batezbestekoa",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -231,7 +235,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "Disco medio actual",
+      "title": "Uneko batez besteko diskoa",
       "gridPos": {
         "x": 8,
         "y": 0,
@@ -246,7 +250,7 @@
         {
           "refId": "A",
           "expr": "avg(disk_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
-          "legendFormat": "Disco medio",
+          "legendFormat": "Disko batezbestekoa",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -296,7 +300,7 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "Temperatura media",
+      "title": "Batez besteko tenperatura",
       "gridPos": {
         "x": 12,
         "y": 0,
@@ -311,7 +315,7 @@
         {
           "refId": "A",
           "expr": "avg(temperature_celsius{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
-          "legendFormat": "Temp media",
+          "legendFormat": "Tenperatura batezbestekoa",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -361,7 +365,7 @@
     {
       "id": 5,
       "type": "gauge",
-      "title": "Batería media",
+      "title": "Batez besteko bateria",
       "gridPos": {
         "x": 16,
         "y": 0,
@@ -376,7 +380,7 @@
         {
           "refId": "A",
           "expr": "avg(battery_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"})",
-          "legendFormat": "Batería",
+          "legendFormat": "Bateria",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -424,7 +428,7 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "Portátiles reportando en la empresa",
+      "title": "Enpresan txostenak bidaltzen dituzten ordenagailuak",
       "gridPos": {
         "x": 20,
         "y": 0,
@@ -439,7 +443,7 @@
         {
           "refId": "A",
           "expr": "count(count by (portatil) (cpu_usage_percent{empresa=~\"$empresa\", portatil=~\"$portatil\"}))",
-          "legendFormat": "Portátiles",
+          "legendFormat": "Ordenagailuak",
           "range": true,
           "datasource": {
             "type": "prometheus",
@@ -489,7 +493,7 @@
     {
       "id": 7,
       "type": "table",
-      "title": "Uso medio de CPU por empresa",
+      "title": "CPUaren batez besteko erabilera enpresaka",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -547,7 +551,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -628,7 +632,7 @@
     {
       "id": 8,
       "type": "table",
-      "title": "Uso medio de RAM por empresa",
+      "title": "RAMaren batez besteko erabilera enpresaka",
       "gridPos": {
         "x": 0,
         "y": 12,
@@ -686,7 +690,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -767,7 +771,7 @@
     {
       "id": 9,
       "type": "table",
-      "title": "Uso medio de disco por empresa",
+      "title": "Diskoaren batez besteko erabilera enpresaka",
       "gridPos": {
         "x": 0,
         "y": 20,
@@ -825,7 +829,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -906,7 +910,7 @@
     {
       "id": 10,
       "type": "table",
-      "title": "Temperatura media por empresa",
+      "title": "Batez besteko tenperatura enpresaka",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -964,7 +968,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1045,7 +1049,7 @@
     {
       "id": 11,
       "type": "table",
-      "title": "Batería media por empresa",
+      "title": "Batez besteko bateria enpresaka",
       "gridPos": {
         "x": 0,
         "y": 36,
@@ -1103,7 +1107,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1184,7 +1188,7 @@
     {
       "id": 12,
       "type": "bargauge",
-      "title": "Top empresas con más CPU",
+      "title": "CPU erabilera handiena duten ordenagailuak",
       "gridPos": {
         "x": 12,
         "y": 20,
@@ -1248,7 +1252,7 @@
     {
       "id": 13,
       "type": "table",
-      "title": "Estado actual por empresa",
+      "title": "Uneko egoera enpresaka",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -1285,7 +1289,7 @@
         {
           "refId": "C",
           "expr": "avg by (empresa) (disk_usage_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "Disco",
+          "legendFormat": "Diskoa",
           "instant": true,
           "format": "table",
           "datasource": {
@@ -1307,7 +1311,7 @@
         {
           "refId": "E",
           "expr": "avg by (empresa) (battery_percent{empresa=~\"$empresa\"})",
-          "legendFormat": "Batería",
+          "legendFormat": "Bateria",
           "instant": true,
           "format": "table",
           "datasource": {
@@ -1366,7 +1370,7 @@
             "renameByName": {
               "Value #A": "CPU %",
               "Value #B": "RAM %",
-              "Value #C": "Disco %",
+              "Value #C": "Diskoa %",
               "Value #D": "Temp C",
               "Value #E": "Bateria %"
             }

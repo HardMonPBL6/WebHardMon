@@ -7,7 +7,7 @@
   "graphTooltip": 1,
   "id": null,
   "uid": "webhardmon-empresa",
-  "title": "WebHardMon - Dashboard de empresa",
+  "title": "WebHardMon - Enpresaren panela",
   "tags": [
     "webhardmon",
     "telemetria",
@@ -38,7 +38,8 @@
           "selected": false,
           "text": "1",
           "value": "1"
-        }
+        },
+        "label": "Enpresa"
       },
       {
         "name": "ram",
@@ -53,10 +54,11 @@
         "multi": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": ".*"
         },
-        "allValue": ".*"
+        "allValue": ".*",
+        "label": "RAM"
       },
       {
         "name": "storage",
@@ -71,10 +73,11 @@
         "multi": true,
         "current": {
           "selected": true,
-          "text": "All",
+          "text": "Guztiak",
           "value": ".*"
         },
-        "allValue": ".*"
+        "allValue": ".*",
+        "label": "Biltegiratzea"
       },
       {
         "name": "topk",
@@ -101,7 +104,8 @@
             "text": "15",
             "value": "15"
           }
-        ]
+        ],
+        "label": "Kopurua"
       }
     ]
   },
@@ -109,7 +113,7 @@
     {
       "id": 1,
       "type": "stat",
-      "title": "CPU media actual",
+      "title": "CPU",
       "gridPos": {
         "x": 0,
         "y": 0,
@@ -171,7 +175,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "RAM media actual",
+      "title": "RAM",
       "gridPos": {
         "x": 4,
         "y": 0,
@@ -233,7 +237,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "Disco medio actual",
+      "title": "Diskoa",
       "gridPos": {
         "x": 8,
         "y": 0,
@@ -295,7 +299,7 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "Temperatura media",
+      "title": "Tenperatura",
       "gridPos": {
         "x": 12,
         "y": 0,
@@ -357,7 +361,7 @@
     {
       "id": 5,
       "type": "gauge",
-      "title": "Batería media",
+      "title": "Bateria",
       "gridPos": {
         "x": 16,
         "y": 0,
@@ -417,7 +421,7 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "Portátiles reportando",
+      "title": "Ordenagailuak",
       "gridPos": {
         "x": 20,
         "y": 0,
@@ -479,7 +483,7 @@
     {
       "id": 7,
       "type": "table",
-      "title": "Peores portátiles por CPU",
+      "title": "CPU",
       "gridPos": {
         "x": 0,
         "y": 4,
@@ -534,7 +538,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -560,7 +564,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU media %"
+              "options": "CPU %"
             },
             "properties": [
               {
@@ -617,23 +621,23 @@
               "instance": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "Value": "CPU media %",
-              "Value #A": "CPU media %"
+              "portatil": "Ordenagailua",
+              "Value": "CPU %",
+              "Value #A": "CPU %"
             },
             "indexByName": {
-              "Portátil": 0,
-              "CPU media %": 1
+              "Ordenagailua": 0,
+              "CPU %": 1
             }
           }
         }
       ],
-      "description": "Ranking calculado sobre los datos de los ultimos 30 dias y filtrado por RAM/Disco."
+      "description": "Rankinga hautatutako iragazkien arabera kalkulatzen da."
     },
     {
       "id": 8,
       "type": "table",
-      "title": "Peores portátiles por RAM",
+      "title": "RAM",
       "gridPos": {
         "x": 0,
         "y": 12,
@@ -688,7 +692,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -714,7 +718,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "RAM media %"
+              "options": "RAM %"
             },
             "properties": [
               {
@@ -771,23 +775,23 @@
               "instance": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "Value": "RAM media %",
-              "Value #A": "RAM media %"
+              "portatil": "Ordenagailua",
+              "Value": "RAM %",
+              "Value #A": "RAM %"
             },
             "indexByName": {
-              "Portátil": 0,
-              "RAM media %": 1
+              "Ordenagailua": 0,
+              "RAM %": 1
             }
           }
         }
       ],
-      "description": "Ranking calculado sobre los datos de los ultimos 30 dias y filtrado por RAM/Disco."
+      "description": "Rankinga hautatutako iragazkien arabera kalkulatzen da."
     },
     {
       "id": 9,
       "type": "table",
-      "title": "Peores portátiles por disco",
+      "title": "Diskoa",
       "gridPos": {
         "x": 0,
         "y": 20,
@@ -842,7 +846,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -868,7 +872,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disco medio %"
+              "options": "Diskoa %"
             },
             "properties": [
               {
@@ -925,23 +929,23 @@
               "instance": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "Value": "Disco medio %",
-              "Value #A": "Disco medio %"
+              "portatil": "Ordenagailua",
+              "Value": "Diskoa %",
+              "Value #A": "Diskoa %"
             },
             "indexByName": {
-              "Portátil": 0,
-              "Disco medio %": 1
+              "Ordenagailua": 0,
+              "Diskoa %": 1
             }
           }
         }
       ],
-      "description": "Ranking calculado sobre los datos de los ultimos 30 dias y filtrado por RAM/Disco."
+      "description": "Rankinga hautatutako iragazkien arabera kalkulatzen da."
     },
     {
       "id": 10,
       "type": "table",
-      "title": "Peores portátiles por temperatura",
+      "title": "Tenperatura",
       "gridPos": {
         "x": 0,
         "y": 28,
@@ -996,7 +1000,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1022,7 +1026,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Temperatura media ºC"
+              "options": "Tenperatura ºC"
             },
             "properties": [
               {
@@ -1079,23 +1083,23 @@
               "instance": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "Value": "Temperatura media ºC",
-              "Value #A": "Temperatura media ºC"
+              "portatil": "Ordenagailua",
+              "Value": "Tenperatura ºC",
+              "Value #A": "Tenperatura ºC"
             },
             "indexByName": {
-              "Portátil": 0,
-              "Temperatura media ºC": 1
+              "Ordenagailua": 0,
+              "Tenperatura ºC": 1
             }
           }
         }
       ],
-      "description": "Ranking calculado sobre los datos de los ultimos 30 dias y filtrado por RAM/Disco."
+      "description": "Rankinga hautatutako iragazkien arabera kalkulatzen da."
     },
     {
       "id": 11,
       "type": "table",
-      "title": "Peores portátiles por stress score",
+      "title": "Estresa",
       "gridPos": {
         "x": 0,
         "y": 36,
@@ -1150,7 +1154,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Portátil"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1176,7 +1180,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Stress score"
+              "options": "Estresa"
             },
             "properties": [
               {
@@ -1233,18 +1237,18 @@
               "instance": true
             },
             "renameByName": {
-              "portatil": "Portátil",
-              "Value": "Stress score",
-              "Value #A": "Stress score"
+              "portatil": "Ordenagailua",
+              "Value": "Estresa",
+              "Value #A": "Estresa"
             },
             "indexByName": {
-              "Portátil": 0,
-              "Stress score": 1
+              "Ordenagailua": 0,
+              "Estresa": 1
             }
           }
         }
       ],
-      "description": "Ranking calculado sobre los datos de los ultimos 30 dias y filtrado por RAM/Disco."
+      "description": "Rankinga hautatutako iragazkien arabera kalkulatzen da."
     }
   ]
 }

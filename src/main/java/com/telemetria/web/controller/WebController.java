@@ -42,6 +42,11 @@ public class WebController {
         this.licenciaRepository = licenciaRepository;
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping({"/", "/dashboard", "/dashboard/empresa"})
     public String dashboardEmpresa(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
         if (principal == null) {
@@ -55,7 +60,7 @@ public class WebController {
         model.addAttribute("empresaId", empresaId);
         model.addAttribute("dashboardTipo", "empresa");
         model.addAttribute("seccionActiva", "empresa");
-        model.addAttribute("dashboardTitulo", "Dashboard de empresa");
+        model.addAttribute("dashboardTitulo", "Enpresaren panela");
         model.addAttribute("portatiles", List.of());
 
         return "layout";
@@ -74,7 +79,7 @@ public class WebController {
         model.addAttribute("empresaId", empresaId);
         model.addAttribute("dashboardTipo", "ordenadores");
         model.addAttribute("seccionActiva", "ordenadores");
-        model.addAttribute("dashboardTitulo", "Dashboard de ordenadores");
+        model.addAttribute("dashboardTitulo", "Ordenagailuen panela");
         model.addAttribute("portatiles", victoriaMetricsService.findPortatilesByEmpresa(empresaId));
 
         return "layout";
@@ -98,7 +103,7 @@ public class WebController {
         model.addAttribute("empresaNombre", principal.getEmpresaNombre());
         model.addAttribute("empresaId", empresaId);
         model.addAttribute("seccionActiva", "licencias");
-        model.addAttribute("dashboardTitulo", "Licencias");
+        model.addAttribute("dashboardTitulo", "Lizentziak");
         model.addAttribute("licencias", licencias);
         model.addAttribute("licenciasOrdenadores", licenciasOrdenadores);
         model.addAttribute("portatilesSinLicencia", portatilesSinLicencia);
@@ -121,19 +126,19 @@ public class WebController {
         String codigoNormalizado = normalizarCodigo(codigo);
 
         if (portatilNormalizado.isBlank()) {
-            redirectAttributes.addFlashAttribute("error", "Debes indicar el nombre del portátil.");
+            redirectAttributes.addFlashAttribute("error", "Ordenagailuaren izena adierazi behar duzu.");
             return "redirect:/licencias";
         }
 
         if (licenciaRepository.existsByEmpresaIdAndPortatil(principal.getEmpresaId(), portatilNormalizado)) {
-            redirectAttributes.addFlashAttribute("error", "Ese portátil ya tiene una licencia asignada.");
+            redirectAttributes.addFlashAttribute("error", "Ordenagailu horrek lizentzia bat esleituta du dagoeneko.");
             return "redirect:/licencias";
         }
 
         if (codigoNormalizado.isBlank()) {
             codigoNormalizado = generarCodigoLicenciaUnico();
         } else if (licenciaRepository.existsByCodigo(codigoNormalizado)) {
-            redirectAttributes.addFlashAttribute("error", "Ese código de licencia ya existe.");
+            redirectAttributes.addFlashAttribute("error", "Lizentzia-kode hori badago dagoeneko.");
             return "redirect:/licencias";
         }
 
@@ -147,7 +152,7 @@ public class WebController {
         licencia.setActiva(true);
 
         licenciaRepository.save(licencia);
-        redirectAttributes.addFlashAttribute("success", "Licencia creada correctamente.");
+        redirectAttributes.addFlashAttribute("success", "Lizentzia ondo sortu da.");
         return "redirect:/licencias";
     }
 
@@ -162,11 +167,11 @@ public class WebController {
         licenciaRepository.findByIdAndEmpresaId(id, principal.getEmpresaId())
                 .ifPresentOrElse(
                         licenciaRepository::delete,
-                        () -> redirectAttributes.addFlashAttribute("error", "No se ha encontrado esa licencia en tu empresa.")
+                        () -> redirectAttributes.addFlashAttribute("error", "Ez da lizentzia hori aurkitu zure enpresan.")
                 );
 
         if (!redirectAttributes.getFlashAttributes().containsKey("error")) {
-            redirectAttributes.addFlashAttribute("success", "Licencia borrada correctamente.");
+            redirectAttributes.addFlashAttribute("success", "Lizentzia ondo ezabatu da.");
         }
 
         return "redirect:/licencias";
