@@ -524,80 +524,6 @@
       }
     },
     {
-      "id": 13,
-      "type": "table",
-      "title": "Ezaugarri teknikoak",
-      "gridPos": {
-        "x": 0,
-        "y": 28,
-        "w": 24,
-        "h": 4
-      },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "hadesarchitect-cassandra-datasource",
-            "uid": "cassandra"
-          },
-          "target": "SELECT nombre, procesador, ram, almacenamiento, ultima_vez FROM ordenadores WHERE empresa_id = $empresa AND nombre = '$nombre'",
-          "rawQuery": true,
-          "queryType": "query",
-          "format": "table"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "nombre": "Ordenagailua",
-              "procesador": "Prozesadorea",
-              "ram": "RAM",
-              "almacenamiento": "Diskoa",
-              "ultima_vez": "Azken konexioa"
-            }
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "string",
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            }
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Azken konexioa"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "dateTimeAsLocal"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
-      }
-    },
-    {
       "id": 7,
       "type": "timeseries",
       "title": "CPU denboran",
@@ -1086,6 +1012,80 @@
         "tooltip": {
           "mode": "single",
           "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "table",
+      "title": "Ezaugarri teknikoak",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, procesador, ram, almacenamiento, ultima_vez FROM ordenadores WHERE empresa_id = $empresa AND nombre = '$nombre'",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "nombre": "Ordenagailua",
+              "procesador": "Prozesadorea",
+              "ram": "RAM",
+              "almacenamiento": "Diskoa",
+              "ultima_vez": "Azken konexioa"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "string",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Azken konexioa"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
         }
       }
     }

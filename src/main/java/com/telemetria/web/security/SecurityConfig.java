@@ -18,8 +18,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
            .authorizeHttpRequests(auth -> auth
             .requestMatchers("/css/**", "/js/**", "/login").permitAll()
+            .requestMatchers("/api/agente/**").permitAll()
             .anyRequest().authenticated()
         )
             .formLogin(form -> form

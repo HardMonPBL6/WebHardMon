@@ -1,7 +1,9 @@
 #!/bin/bash
 # seed-random.sh
 # Genera e inserta datos aleatorios de telemetria en Cassandra para testing.
-# Crea 3 empresas con 10 ordenadores en total, con datos de las ultimas 48h.
+# Crea 3 empresas con ordenadores, con datos de las ultimas 48h.
+# Cada ordenador lleva un codigo_licencia de ejemplo para simular
+# el registro del agente Go.
 #
 # Uso: bash seed-random.sh
 
@@ -42,8 +44,14 @@ PROCESADORES = [
     "Intel i5-1135G7", "Intel i7-1165G7", "AMD Ryzen 5 5600U",
     "AMD Ryzen 7 5800U", "Apple M1", "Intel i3-1115G4", "AMD Ryzen 3 5300U"
 ]
-RAMS           = ["8GB", "16GB", "32GB", "64GB"]
+RAMS            = ["8GB", "16GB", "32GB", "64GB"]
 ALMACENAMIENTOS = ["256GB SSD", "512GB SSD", "1TB SSD", "2TB SSD"]
+LICENSE_CHARS   = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+def gen_license():
+    """Genera un codigo de licencia de ejemplo (formato WHM-XXXX-XXXX-XXXX-XXXX)."""
+    bloques = ["".join(random.choices(LICENSE_CHARS, k=4)) for _ in range(4)]
+    return "WHM-" + "-".join(bloques)
 
 # Empresas y sus ordenadores (empresa_id debe coincidir con MySQL)
 EMPRESAS = {
@@ -52,7 +60,6 @@ EMPRESAS = {
     3: ["PC-3-1", "PC-3-2", "PC-3-3"],
 }
 
-# Nombres de empresa (para tabla empresas en Cassandra)
 NOMBRES_EMPRESA = {
     1: "Acme Corp",
     2: "Beta Industries",
@@ -79,13 +86,13 @@ for empresa_id, ordenadores in EMPRESAS.items():
         proc    = random.choice(PROCESADORES)
         ram     = random.choice(RAMS)
         alm     = random.choice(ALMACENAMIENTOS)
+        codigo  = gen_license()
 
-        # Registro en ordenadores (ultima_vez = ahora)
         ts_now = int(NOW.timestamp() * 1000)
         cql_lines.append(
             f"INSERT INTO {KEYSPACE}.ordenadores "
-            f"(empresa_id, nombre, procesador, ram, almacenamiento, ultima_vez) "
-            f"VALUES ({empresa_id}, '{nombre}', '{proc}', '{ram}', '{alm}', {ts_now});"
+            f"(empresa_id, nombre, procesador, ram, almacenamiento, ultima_vez, codigo_licencia) "
+            f"VALUES ({empresa_id}, '{nombre}', '{proc}', '{ram}', '{alm}', {ts_now}, '{codigo}');"
         )
 
         # Valores base por ordenador con perfil propio

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="eu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="eu" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,138 +8,235 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0f172a',
-                        darkPanel: '#1e293b'
-                    }
-                }
-            }
+            theme: { extend: { colors: { darkBg: '#0f172a', darkPanel: '#1e293b' } } }
         }
     </script>
 </head>
 <body class="bg-darkBg text-gray-200 antialiased h-screen flex overflow-hidden selection:bg-blue-600 selection:text-white">
 
+<!-- Sidebar -->
 <aside class="w-64 bg-darkPanel border-r border-gray-800 flex flex-col">
     <div class="h-16 flex items-center px-6 border-b border-gray-800">
         <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">WebHardMon</span>
     </div>
     <nav class="flex-1 px-4 py-6 space-y-2">
-        <a th:href="@{/dashboard/empresa}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'empresa'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <a th:href="@{/dashboard/empresa}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+           th:classappend="${seccionActiva == 'empresa'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             Enpresa
         </a>
-        <a th:href="@{/dashboard/ordenadores}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'ordenadores'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <a th:href="@{/dashboard/ordenadores}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+           th:classappend="${seccionActiva == 'ordenadores'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             Ordenagailuak
         </a>
-        <a th:href="@{/licencias}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'licencias'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+        <a th:href="@{/licencias}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors"
+           th:classappend="${seccionActiva == 'licencias'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
             Lizentziak
         </a>
     </nav>
 </aside>
 
+<!-- Main -->
 <div class="flex-1 flex flex-col min-w-0">
     <header class="h-16 bg-darkPanel border-b border-gray-800 flex items-center justify-between px-6 z-10">
         <div class="text-sm font-medium text-gray-400">
-            Enpresa: <span class="text-white" th:text="${empresaNombre}">Enpresa</span> · <span th:text="${dashboardTitulo}">Lizentziak</span>
+            Enpresa: <span class="text-white" th:text="${empresaNombre}">Enpresa</span>
+            · <span th:text="${dashboardTitulo}">Lizentziak</span>
         </div>
         <form th:action="@{/logout}" method="post" class="m-0">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-xs font-semibold text-gray-300 transition-colors hover:border-red-500/60 hover:bg-red-950/40 hover:text-red-200">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 Saioa itxi
             </button>
         </form>
     </header>
 
     <main class="flex-1 p-6 overflow-auto space-y-6">
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="rounded-lg border border-green-700 bg-green-900/30 px-4 py-3 text-sm text-green-300" th:text="${success}"></div>
+        <div th:if="${error}"   class="rounded-lg border border-red-700   bg-red-900/30   px-4 py-3 text-sm text-red-300"   th:text="${error}"></div>
+
+        <!-- Stats -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-darkPanel rounded-xl border border-gray-800 p-5">
-                <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Detektatutako ordenagailuak</div>
-                <div class="text-3xl font-bold text-white mt-2" th:text="${portatilesDetectados}">0</div>
-                <div class="text-xs text-gray-500 mt-1">Cassandra-tik</div>
+                <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Erabiltzaileak</div>
+                <div class="text-3xl font-bold text-white mt-2" th:text="${#lists.size(vistas)}">0</div>
+                <div class="text-xs text-gray-500 mt-1">MySQL-en erregistratuta</div>
             </div>
             <div class="bg-darkPanel rounded-xl border border-gray-800 p-5">
-                <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Sortutako lizentziak</div>
+                <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Lizentziak</div>
                 <div class="text-3xl font-bold text-white mt-2" th:text="${#lists.size(licencias)}">0</div>
-                <div class="text-xs text-gray-500 mt-1">MySQL-en gordeta</div>
+                <div class="text-xs text-gray-500 mt-1">Esleituta</div>
             </div>
             <div class="bg-darkPanel rounded-xl border border-gray-800 p-5">
                 <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Zain</div>
-                <div class="text-3xl font-bold text-white mt-2" th:text="${#lists.size(portatilesSinLizentzia)}">0</div>
-                <div class="text-xs text-gray-500 mt-1">Lizentziarik gabe detektatuta</div>
+                <div class="text-3xl font-bold text-white mt-2" th:text="${#lists.size(usuariosSinLicencia)}">0</div>
+                <div class="text-xs text-gray-500 mt-1">Lizentziarik gabe</div>
+            </div>
+            <div class="bg-darkPanel rounded-xl border border-gray-800 p-5">
+                <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Cassandra</div>
+                <div class="text-3xl font-bold text-white mt-2" th:text="${portatilesDetectados}">0</div>
+                <div class="text-xs text-gray-500 mt-1">Metrikak bidaltzen</div>
             </div>
         </section>
 
-        <section class="bg-darkPanel rounded-xl border border-gray-800 p-6 shadow-lg">
-            <h1 class="text-xl font-semibold text-white mb-2">Lizentzien kudeaketa</h1>
-            <p class="text-sm text-gray-400 mb-6">Lizentzia bakoitzak zure enpresan WebHardMon exekutatzeko baimendutako ordenagailu eramangarri bat identifikatzen du.</p>
+        <!-- Formularios: crear usuario + asignar licencia -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <div th:if="${success}" class="mb-4 rounded-lg border border-green-700 bg-green-900/30 px-4 py-3 text-sm text-green-300" th:text="${success}"></div>
-            <div th:if="${error}" class="mb-4 rounded-lg border border-red-700 bg-red-900/30 px-4 py-3 text-sm text-red-300" th:text="${error}"></div>
+            <!-- Crear usuario -->
+            <div class="bg-darkPanel rounded-xl border border-gray-800 p-6">
+                <h2 class="text-base font-semibold text-white mb-1">Erabiltzaile berria</h2>
+                <p class="text-xs text-gray-400 mb-5">Gehitu langile bat eta bere ordenagailua. Gero esleitu lizentzia bat agentea exekutatzeko.</p>
+                <form th:action="@{/usuarios}" method="post" class="space-y-4">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Langilearen izena</label>
+                        <input name="nombre" type="text" required placeholder="Adibidez: Jon Etxeberria"
+                               class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Ordenagailua</label>
+                        <input name="nombreOrdenador" type="text" required placeholder="Adibidez: PC-JON"
+                               class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Cassandra-n erabiliko den identifikatzailea.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-5 py-2 text-sm font-semibold transition-colors">
+                        Erabiltzailea sortu
+                    </button>
+                </form>
+            </div>
 
-            <form th:action="@{/licencias}" method="post" class="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end mb-8">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <div>
-                    <label for="portatil" class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Ordenagailua</label>
-                    <select id="portatilSelect" class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500" onchange="document.getElementById('portatil').value = this.value">
-                        <option value="">Hautatu detektatutako ordenagailua...</option>
-                        <option th:each="portatil : ${portatilesSinLizentzia}" th:value="${portatil}" th:text="${portatil}">PC-1-3</option>
-                    </select>
-                    <input id="portatil" name="portatil" type="text" placeholder="Edo eskuz idatzi: PC-1-3" required class="mt-2 w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500">
+            <!-- Asignar licencia -->
+            <div class="bg-darkPanel rounded-xl border border-gray-800 p-6">
+                <h2 class="text-base font-semibold text-white mb-1">Lizentzia esleitu</h2>
+                <p class="text-xs text-gray-400 mb-5">Esleitu lizentzia bat lizentziarik ez duen erabiltzaile bati.</p>
+
+                <div th:if="${#lists.isEmpty(usuariosSinLicencia)}"
+                     class="rounded-lg border border-gray-700 bg-gray-900/40 px-4 py-6 text-center text-sm text-gray-500">
+                    Erabiltzaile guztiek lizentzia dute.
                 </div>
-                <div>
-                    <label for="codigo" class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Lizentzia-kodea</label>
-                    <input id="codigo" name="codigo" type="text" th:value="${codigoSugerido}" class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500">
-                    <p class="text-xs text-gray-500 mt-2">Iradokitako kodea utz dezakezu edo zeurea idatzi.</p>
-                </div>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-5 py-2 text-sm font-semibold transition-colors">Sortu lizentzia</button>
-            </form>
 
-            <div class="overflow-hidden rounded-xl border border-gray-800">
+                <form th:unless="${#lists.isEmpty(usuariosSinLicencia)}"
+                      th:action="@{/licencias}" method="post" class="space-y-4">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Erabiltzailea</label>
+                        <select name="usuarioId" required
+                                class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 outline-none focus:border-blue-500">
+                            <option value="">Hautatu erabiltzailea...</option>
+                            <option th:each="u : ${usuariosSinLicencia}"
+                                    th:value="${u.id}"
+                                    th:text="${u.nombre + ' — ' + u.nombreOrdenador}">
+                                Jon — PC-JON
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 font-semibold mb-1">Lizentzia-kodea</label>
+                        <input name="codigo" type="text" th:value="${codigoSugerido}"
+                               class="w-full bg-darkBg border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 font-mono outline-none focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Iradokitako kodea utz dezakezu edo zeurea idatzi.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg px-5 py-2 text-sm font-semibold transition-colors">
+                        Lizentzia esleitu
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Tabla de usuarios y licencias -->
+        <section class="bg-darkPanel rounded-xl border border-gray-800 shadow-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800">
+                <h2 class="text-base font-semibold text-white">Erabiltzaileak eta lizentziak</h2>
+                <p class="text-xs text-gray-400 mt-1">Enpresako langile guztiak, haien ordenagailuak eta agenterako baimenak.</p>
+            </div>
+            <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-900/60 text-gray-400 uppercase text-xs tracking-wider">
-                    <tr>
-                        <th class="text-left px-4 py-3">Ordenagailua</th>
-                        <th class="text-left px-4 py-3">Jatorria</th>
-                        <th class="text-left px-4 py-3">Lizentzia</th>
-                        <th class="text-left px-4 py-3">Egoera</th>
-                        <th class="text-left px-4 py-3">Sortua</th>
-                        <th class="text-right px-4 py-3">Ekintzak</th>
-                    </tr>
+                        <tr>
+                            <th class="text-left px-4 py-3">Langilea</th>
+                            <th class="text-left px-4 py-3">Ordenagailua</th>
+                            <th class="text-left px-4 py-3">Lizentzia-kodea</th>
+                            <th class="text-left px-4 py-3">Egoera</th>
+                            <th class="text-left px-4 py-3">Cassandra</th>
+                            <th class="text-left px-4 py-3">Sortua</th>
+                            <th class="text-right px-4 py-3">Ekintzak</th>
+                        </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-800">
-                    <tr th:if="${#lists.isEmpty(licenciasOrdenadores)}">
-                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">Ez dago detektatutako ordenagailurik edo sortutako lizentziarik.</td>
-                    </tr>
-                    <tr th:each="item : ${licenciasOrdenadores}" class="hover:bg-gray-900/30">
-                        <td class="px-4 py-3 font-medium text-white" th:text="${item.portatil}">PC-1-3</td>
-                        <td class="px-4 py-3">
-                            <span class="inline-flex rounded-full bg-blue-900/40 px-2 py-1 text-xs text-blue-300" th:if="${item.reportandoMetricas}">Cassandra</span>
-                            <span class="inline-flex rounded-full bg-gray-800 px-2 py-1 text-xs text-gray-400" th:unless="${item.reportandoMetricas}">MySQL bakarrik</span>
-                        </td>
-                        <td class="px-4 py-3 font-mono text-blue-300" th:text="${item.licencia != null ? item.licencia.codigo : 'Lizentziarik gabe'}">WHM-XXXX</td>
-                        <td class="px-4 py-3">
-                            <span class="inline-flex rounded-full bg-green-900/40 px-2 py-1 text-xs text-green-300" th:if="${item.licencia != null && item.licencia.activa}">Aktiboa</span>
-                            <span class="inline-flex rounded-full bg-yellow-900/40 px-2 py-1 text-xs text-yellow-300" th:if="${item.licencia == null}">Zain</span>
-                            <span class="inline-flex rounded-full bg-red-900/40 px-2 py-1 text-xs text-red-300" th:if="${item.licencia != null && !item.licencia.activa}">Inaktiboa</span>
-                        </td>
-                        <td class="px-4 py-3 text-gray-400" th:text="${item.licencia != null ? #temporals.format(item.licencia.fechaCreacion, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
-                        <td class="px-4 py-3 text-right">
-                            <form th:if="${item.licencia != null}" th:action="@{/licencias/{id}/borrar(id=${item.licencia.id})}" method="post" class="inline" onsubmit="return confirm('Lizentzia hau ezabatu?');">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit" class="text-red-300 hover:text-red-200 font-medium">Ezabatu</button>
-                            </form>
-                            <span th:if="${item.licencia == null}" class="text-gray-500">Goian sortu</span>
-                        </td>
-                    </tr>
+                        <tr th:if="${#lists.isEmpty(vistas)}">
+                            <td colspan="7" class="px-4 py-10 text-center text-gray-500">
+                                Ez dago erabiltzailerik. Gehitu lehena goiko formularioarekin.
+                            </td>
+                        </tr>
+                        <tr th:each="item : ${vistas}" class="hover:bg-gray-900/30">
+
+                            <!-- Nombre empleado -->
+                            <td class="px-4 py-3 font-medium text-white" th:text="${item.usuario.nombre}">Jon</td>
+
+                            <!-- Nombre ordenador -->
+                            <td class="px-4 py-3 font-mono text-gray-300" th:text="${item.usuario.nombreOrdenador}">PC-JON</td>
+
+                            <!-- Codigo licencia -->
+                            <td class="px-4 py-3 font-mono text-blue-300"
+                                th:text="${item.licencia != null ? item.licencia.codigo : '—'}">WHM-XXXX</td>
+
+                            <!-- Estado licencia -->
+                            <td class="px-4 py-3">
+                                <span th:if="${item.licencia != null and item.licencia.activa}"
+                                      class="inline-flex rounded-full bg-green-900/40 px-2 py-1 text-xs text-green-300">Aktiboa</span>
+                                <span th:if="${item.licencia != null and !item.licencia.activa}"
+                                      class="inline-flex rounded-full bg-red-900/40 px-2 py-1 text-xs text-red-300">Inaktiboa</span>
+                                <span th:if="${item.licencia == null}"
+                                      class="inline-flex rounded-full bg-yellow-900/40 px-2 py-1 text-xs text-yellow-300">Zain</span>
+                            </td>
+
+                            <!-- Estado Cassandra -->
+                            <td class="px-4 py-3">
+                                <span th:if="${item.reportandoMetricas}"
+                                      class="inline-flex rounded-full bg-blue-900/40 px-2 py-1 text-xs text-blue-300">Bidaltzen</span>
+                                <span th:unless="${item.reportandoMetricas}"
+                                      class="inline-flex rounded-full bg-gray-800 px-2 py-1 text-xs text-gray-500">Inaktibo</span>
+                            </td>
+
+                            <!-- Fecha creacion licencia -->
+                            <td class="px-4 py-3 text-gray-400 text-xs"
+                                th:text="${item.licencia != null ? #temporals.format(item.licencia.fechaCreacion, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+
+                            <!-- Acciones -->
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end gap-3">
+                                    <!-- Borrar licencia (deja al usuario) -->
+                                    <form th:if="${item.licencia != null}"
+                                          th:action="@{/licencias/{id}/borrar(id=${item.licencia.id})}"
+                                          method="post" class="inline"
+                                          onsubmit="return confirm('Lizentzia ezabatu? Erabiltzailea gordeta geratuko da.')">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="text-xs text-yellow-400 hover:text-yellow-300 font-medium">
+                                            Lizentzia kendu
+                                        </button>
+                                    </form>
+                                    <!-- Borrar usuario (y su licencia) -->
+                                    <form th:action="@{/usuarios/{id}/borrar(id=${item.usuario.id})}"
+                                          method="post" class="inline"
+                                          onsubmit="return confirm('Erabiltzailea eta bere lizentzia ezabatu?')">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="text-xs text-red-400 hover:text-red-300 font-medium">
+                                            Erabiltzailea ezabatu
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </section>
+
     </main>
 </div>
 </body>

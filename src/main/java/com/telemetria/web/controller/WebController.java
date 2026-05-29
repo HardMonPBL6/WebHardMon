@@ -2,10 +2,13 @@ package com.telemetria.web.controller;
 
 import com.telemetria.web.model.Empresa;
 import com.telemetria.web.model.Licencia;
+import com.telemetria.web.model.Usuario;
+import com.telemetria.web.repository.EmpresaRepository;
 import com.telemetria.web.repository.LicenciaRepository;
+import com.telemetria.web.repository.UsuarioRepository;
 import com.telemetria.web.security.AdminPrincipal;
-import com.telemetria.web.service.GrafanaService;
 import com.telemetria.web.service.CassandraTelemetryService;
+import com.telemetria.web.service.GrafanaService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.springframework.dao.DataAccessException;
+
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,14 +36,22 @@ public class WebController {
     private final GrafanaService grafanaService;
     private final CassandraTelemetryService cassandraTelemetryService;
     private final LicenciaRepository licenciaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EmpresaRepository empresaRepository;
 
     public WebController(GrafanaService grafanaService,
                          CassandraTelemetryService cassandraTelemetryService,
-                         LicenciaRepository licenciaRepository) {
+                         LicenciaRepository licenciaRepository,
+                         UsuarioRepository usuarioRepository,
+                         EmpresaRepository empresaRepository) {
         this.grafanaService = grafanaService;
         this.cassandraTelemetryService = cassandraTelemetryService;
         this.licenciaRepository = licenciaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.empresaRepository = empresaRepository;
     }
+
+    // ── Dashboards ───────────────────────────────────────────────────────────
 
     @GetMapping("/login")
     public String login() {
@@ -49,148 +60,202 @@ public class WebController {
 
     @GetMapping({"/", "/dashboard", "/dashboard/empresa"})
     public String dashboardEmpresa(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
+        if (principal == null) return "redirect:/login";
         Long empresaId = principal.getEmpresaId();
 
         model.addAttribute("grafanaIframeUrl", grafanaService.buildEmpresaDashboardUrl(empresaId));
-        model.addAttribute("empresaNombre", principal.getEmpresaNombre());
-        model.addAttribute("empresaId", empresaId);
-        model.addAttribute("dashboardTipo", "empresa");
-        model.addAttribute("seccionActiva", "empresa");
+        model.addAttribute("empresaNombre",   principal.getEmpresaNombre());
+        model.addAttribute("empresaId",       empresaId);
+        model.addAttribute("dashboardTipo",   "empresa");
+        model.addAttribute("seccionActiva",   "empresa");
         model.addAttribute("dashboardTitulo", "Enpresaren panela");
-        model.addAttribute("portatiles", List.of());
-
+        model.addAttribute("portatiles",      List.of());
         return "layout";
     }
 
     @GetMapping("/dashboard/ordenadores")
     public String dashboardOrdenadores(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
+        if (principal == null) return "redirect:/login";
         Long empresaId = principal.getEmpresaId();
 
         model.addAttribute("grafanaIframeUrl", grafanaService.buildOrdenadoresDashboardUrl(empresaId));
-        model.addAttribute("empresaNombre", principal.getEmpresaNombre());
-        model.addAttribute("empresaId", empresaId);
-        model.addAttribute("dashboardTipo", "ordenadores");
-        model.addAttribute("seccionActiva", "ordenadores");
+        model.addAttribute("empresaNombre",   principal.getEmpresaNombre());
+        model.addAttribute("empresaId",       empresaId);
+        model.addAttribute("dashboardTipo",   "ordenadores");
+        model.addAttribute("seccionActiva",   "ordenadores");
         model.addAttribute("dashboardTitulo", "Ordenagailuen panela");
-        model.addAttribute("portatiles", cassandraTelemetryService.findNombresByEmpresa(empresaId));
-
+        model.addAttribute("portatiles",      cassandraTelemetryService.findNombresByEmpresa(empresaId));
         return "layout";
     }
 
+    // ── Licencias y usuarios ─────────────────────────────────────────────────
+
     @GetMapping("/licencias")
     public String licencias(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-
+        if (principal == null) return "redirect:/login";
         Long empresaId = principal.getEmpresaId();
-        List<Licencia> licencias = licenciaRepository.findByEmpresaIdOrderByPortatilAsc(empresaId);
-        List<String> portatilesCassandra = cassandraTelemetryService.findNombresByEmpresa(empresaId);
-        List<LicenciaOrdenadorView> licenciasOrdenadores = buildLicenciasOrdenadores(portatilesCassandra, licencias);
-        List<String> portatilesSinLicencia = licenciasOrdenadores.stream()
-                .filter(item -> item.licencia() == null)
-                .map(LicenciaOrdenadorView::portatil)
+
+        List<Usuario>  usuarios  = usuarioRepository.findByEmpresaIdOrderByNombreAsc(empresaId);
+        List<Licencia> licencias = licenciaRepository.findByUsuarioEmpresaIdOrderByUsuarioNombreAsc(empresaId);
+        List<String>   enCassandra = cassandraTelemetryService.findNombresByEmpresa(empresaId);
+
+        // Mapa usuarioId -> licencia para construir las vistas sin N+1
+        Map<Long, Licencia> licenciaPorUsuario = licencias.stream()
+                .collect(Collectors.toMap(
+                        l -> l.getUsuario().getId(),
+                        Function.identity(),
+                        (a, b) -> a));
+
+        List<UsuarioLicenciaView> vistas = usuarios.stream()
+                .map(u -> new UsuarioLicenciaView(
+                        u,
+                        licenciaPorUsuario.get(u.getId()),
+                        enCassandra.contains(u.getNombreOrdenador())))
+                .collect(Collectors.toList());
+
+        List<Usuario> usuariosSinLicencia = vistas.stream()
+                .filter(v -> v.licencia() == null)
+                .map(UsuarioLicenciaView::usuario)
                 .toList();
 
-        model.addAttribute("empresaNombre", principal.getEmpresaNombre());
-        model.addAttribute("empresaId", empresaId);
-        model.addAttribute("seccionActiva", "licencias");
-        model.addAttribute("dashboardTitulo", "Lizentziak");
-        model.addAttribute("licencias", licencias);
-        model.addAttribute("licenciasOrdenadores", licenciasOrdenadores);
-        model.addAttribute("portatilesSinLizentzia", portatilesSinLicencia);
-        model.addAttribute("portatilesDetectados", portatilesCassandra.size());
-        model.addAttribute("codigoSugerido", generarCodigoLicenciaUnico());
-
+        model.addAttribute("vistas",               vistas);
+        model.addAttribute("licencias",            licencias);
+        model.addAttribute("usuariosSinLicencia",  usuariosSinLicencia);
+        model.addAttribute("portatilesDetectados", enCassandra.size());
+        model.addAttribute("codigoSugerido",       generarCodigoLicenciaUnico());
+        model.addAttribute("empresaNombre",        principal.getEmpresaNombre());
+        model.addAttribute("empresaId",            empresaId);
+        model.addAttribute("seccionActiva",        "licencias");
+        model.addAttribute("dashboardTitulo",      "Lizentziak");
         return "licencias";
     }
 
-    @PostMapping("/licencias")
-    public String crearLicencia(@AuthenticationPrincipal AdminPrincipal principal,
-                                @RequestParam String portatil,
-                                @RequestParam(required = false) String codigo,
-                                RedirectAttributes redirectAttributes) {
-        if (principal == null) {
-            return "redirect:/login";
+    /** Crear un nuevo usuario (empleado + ordenador) dentro de la empresa. */
+    @PostMapping("/usuarios")
+    public String crearUsuario(@AuthenticationPrincipal AdminPrincipal principal,
+                               @RequestParam String nombre,
+                               @RequestParam String nombreOrdenador,
+                               RedirectAttributes ra) {
+        if (principal == null) return "redirect:/login";
+
+        String nombreN    = normalizar(nombre);
+        String ordenadorN = normalizar(nombreOrdenador);
+
+        if (nombreN.isBlank() || ordenadorN.isBlank()) {
+            ra.addFlashAttribute("error", "Izen eta ordenagailu izena derrigorrezkoak dira.");
+            return "redirect:/licencias";
         }
-
-        String portatilNormalizado = normalizar(portatil);
-        String codigoNormalizado = normalizarCodigo(codigo);
-
-        if (portatilNormalizado.isBlank()) {
-            redirectAttributes.addFlashAttribute("error", "Ordenagailuaren izena adierazi behar duzu.");
+        if (usuarioRepository.existsByEmpresaIdAndNombreOrdenador(principal.getEmpresaId(), ordenadorN)) {
+            ra.addFlashAttribute("error", "Ordenagailu izen hori dagoeneko erregistratuta dago.");
             return "redirect:/licencias";
         }
 
-        if (licenciaRepository.existsByEmpresaIdAndPortatil(principal.getEmpresaId(), portatilNormalizado)) {
-            redirectAttributes.addFlashAttribute("error", "Ordenagailu horrek lizentzia bat esleituta du dagoeneko.");
-            return "redirect:/licencias";
-        }
+        Empresa empresa = empresaRepository.getReferenceById(principal.getEmpresaId());
 
-        if (codigoNormalizado.isBlank()) {
-            codigoNormalizado = generarCodigoLicenciaUnico();
-        } else if (licenciaRepository.existsByCodigo(codigoNormalizado)) {
-            redirectAttributes.addFlashAttribute("error", "Lizentzia-kode hori badago dagoeneko.");
-            return "redirect:/licencias";
-        }
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombreN);
+        usuario.setNombreOrdenador(ordenadorN);
+        usuario.setEmpresa(empresa);
+        usuarioRepository.save(usuario);
 
-        Empresa empresa = new Empresa();
-        empresa.setId(principal.getEmpresaId());
-
-        Licencia licencia = new Licencia();
-        licencia.setEmpresa(empresa);
-        licencia.setPortatil(portatilNormalizado);
-        licencia.setCodigo(codigoNormalizado);
-        licencia.setActiva(true);
-
-        licenciaRepository.save(licencia);
-        redirectAttributes.addFlashAttribute("success", "Lizentzia ondo sortu da.");
+        ra.addFlashAttribute("success", "Erabiltzailea ondo sortu da.");
         return "redirect:/licencias";
     }
 
+    /** Borrar un usuario y su licencia (si tiene). */
+    @PostMapping("/usuarios/{id}/borrar")
+    public String borrarUsuario(@AuthenticationPrincipal AdminPrincipal principal,
+                                @PathVariable Long id,
+                                RedirectAttributes ra) {
+        if (principal == null) return "redirect:/login";
+
+        usuarioRepository.findByIdAndEmpresaId(id, principal.getEmpresaId())
+                .ifPresentOrElse(
+                        usuarioRepository::delete,
+                        () -> ra.addFlashAttribute("error", "Ez da erabiltzaile hori aurkitu zure enpresan."));
+
+        if (!ra.getFlashAttributes().containsKey("error")) {
+            ra.addFlashAttribute("success", "Erabiltzailea eta bere lizentzia ezabatu dira.");
+        }
+        return "redirect:/licencias";
+    }
+
+    /** Asignar una licencia a un usuario existente. */
+    @PostMapping("/licencias")
+    public String crearLicencia(@AuthenticationPrincipal AdminPrincipal principal,
+                                @RequestParam(required = false) String usuarioId,
+                                @RequestParam(required = false) String codigo,
+                                RedirectAttributes ra) {
+        if (principal == null) return "redirect:/login";
+        if (usuarioId == null || usuarioId.isBlank()) {
+            ra.addFlashAttribute("error", "Hautatu erabiltzaile bat.");
+            return "redirect:/licencias";
+        }
+        Long usuarioIdLong;
+        try {
+            usuarioIdLong = Long.parseLong(usuarioId.trim());
+        } catch (NumberFormatException e) {
+            ra.addFlashAttribute("error", "Erabiltzaile baliogabea.");
+            return "redirect:/licencias";
+        }
+
+        String codigoN = normalizarCodigo(codigo);
+
+        // Verificar que el usuario pertenece a esta empresa
+        Usuario usuario = usuarioRepository
+                .findByIdAndEmpresaId(usuarioIdLong, principal.getEmpresaId())
+                .orElse(null);
+        if (usuario == null) {
+            ra.addFlashAttribute("error", "Ez da erabiltzaile hori aurkitu zure enpresan.");
+            return "redirect:/licencias";
+        }
+        if (licenciaRepository.existsByUsuarioId(usuarioIdLong)) {
+            ra.addFlashAttribute("error", "Erabiltzaile honek lizentzia bat esleituta du dagoeneko.");
+            return "redirect:/licencias";
+        }
+        if (codigoN.isBlank()) {
+            codigoN = generarCodigoLicenciaUnico();
+        } else if (licenciaRepository.existsByCodigo(codigoN)) {
+            ra.addFlashAttribute("error", "Lizentzia-kode hori badago dagoeneko.");
+            return "redirect:/licencias";
+        }
+
+        Licencia licencia = new Licencia();
+        // getReferenceById devuelve un proxy gestionado, evita el problema de
+        // entidad "detached" al persistir en una nueva transacción de Hibernate 6.
+        licencia.setUsuario(usuarioRepository.getReferenceById(usuarioIdLong));
+        licencia.setCodigo(codigoN);
+        licencia.setActiva(true);
+        try {
+            licenciaRepository.save(licencia);
+        } catch (DataAccessException e) {
+            ra.addFlashAttribute("error", "Lizentzia sortzean gatazka bat gertatu da (kodea edo erabiltzailea dagoeneko existitzen da).");
+            return "redirect:/licencias";
+        }
+
+        ra.addFlashAttribute("success", "Lizentzia ondo sortu da.");
+        return "redirect:/licencias";
+    }
+
+    /** Borrar una licencia (el usuario queda sin licencia pero no se elimina). */
     @PostMapping("/licencias/{id}/borrar")
     public String borrarLicencia(@AuthenticationPrincipal AdminPrincipal principal,
                                  @PathVariable Long id,
-                                 RedirectAttributes redirectAttributes) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
+                                 RedirectAttributes ra) {
+        if (principal == null) return "redirect:/login";
 
-        licenciaRepository.findByIdAndEmpresaId(id, principal.getEmpresaId())
+        licenciaRepository.findByIdAndUsuarioEmpresaId(id, principal.getEmpresaId())
                 .ifPresentOrElse(
                         licenciaRepository::delete,
-                        () -> redirectAttributes.addFlashAttribute("error", "Ez da lizentzia hori aurkitu zure enpresan.")
-                );
+                        () -> ra.addFlashAttribute("error", "Ez da lizentzia hori aurkitu zure enpresan."));
 
-        if (!redirectAttributes.getFlashAttributes().containsKey("error")) {
-            redirectAttributes.addFlashAttribute("success", "Lizentzia ondo ezabatu da.");
+        if (!ra.getFlashAttributes().containsKey("error")) {
+            ra.addFlashAttribute("success", "Lizentzia ondo ezabatu da.");
         }
-
         return "redirect:/licencias";
     }
 
-    private List<LicenciaOrdenadorView> buildLicenciasOrdenadores(List<String> portatilesCassandra, List<Licencia> licencias) {
-        Map<String, Licencia> licenciaPorPortatil = licencias.stream()
-                .collect(Collectors.toMap(Licencia::getPortatil, Function.identity(), (a, b) -> a));
-
-        LinkedHashSet<String> portatiles = new LinkedHashSet<>();
-        portatiles.addAll(portatilesCassandra);
-        licencias.stream().map(Licencia::getPortatil).forEach(portatiles::add);
-
-        List<LicenciaOrdenadorView> resultado = new ArrayList<>();
-        for (String portatil : portatiles) {
-            resultado.add(new LicenciaOrdenadorView(portatil, licenciaPorPortatil.get(portatil), portatilesCassandra.contains(portatil)));
-        }
-        return resultado;
-    }
+    // ── Helpers ──────────────────────────────────────────────────────────────
 
     private String normalizar(String valor) {
         return valor == null ? "" : valor.trim();
@@ -202,25 +267,30 @@ public class WebController {
 
     private String generarCodigoLicenciaUnico() {
         String codigo;
-        do {
-            codigo = generarCodigoLicencia();
-        } while (licenciaRepository.existsByCodigo(codigo));
+        do { codigo = generarCodigoLicencia(); }
+        while (licenciaRepository.existsByCodigo(codigo));
         return codigo;
     }
 
     private String generarCodigoLicencia() {
-        StringBuilder builder = new StringBuilder("WHM-");
-        for (int bloque = 0; bloque < 4; bloque++) {
-            if (bloque > 0) {
-                builder.append('-');
-            }
-            for (int i = 0; i < 4; i++) {
-                builder.append(LICENSE_ALPHABET.charAt(RANDOM.nextInt(LICENSE_ALPHABET.length())));
-            }
+        StringBuilder sb = new StringBuilder("WHM-");
+        for (int b = 0; b < 4; b++) {
+            if (b > 0) sb.append('-');
+            for (int i = 0; i < 4; i++)
+                sb.append(LICENSE_ALPHABET.charAt(RANDOM.nextInt(LICENSE_ALPHABET.length())));
         }
-        return builder.toString();
+        return sb.toString();
     }
 
-    public record LicenciaOrdenadorView(String portatil, Licencia licencia, boolean reportandoMetricas) {
+    // ── Vista ────────────────────────────────────────────────────────────────
+
+    /**
+     * Vista que agrupa un usuario con su licencia (si tiene) y si esta
+     * reportando metricas en Cassandra.
+     */
+    public record UsuarioLicenciaView(
+            Usuario usuario,
+            Licencia licencia,
+            boolean reportandoMetricas) {
     }
 }
