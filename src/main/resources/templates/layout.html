@@ -59,51 +59,45 @@
                 Enpresa: <span class="text-white" th:text="${empresaNombre}">Enpresa</span> · <span th:text="${dashboardTitulo}">Panela</span>
             </div>
 
-            <!-- Selectores de Dispositivo y Rango de Tiempo (Filtros en el Cliente) -->
+            <!-- Selectores de Dispositivo y Rango de Tiempo -->
             <div class="flex items-center gap-4 bg-gray-900/40 rounded-xl px-4 py-2 border border-gray-800/60 shadow-inner">
-                <!-- Selector de RAM -->
-                <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
-                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">RAM:</span>
-                    <select id="selectRam" onchange="filterLaptopsAndUpdate()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
-                        <option value="All">Guztiak</option>
-                        <option value="8">8 GB</option>
-                        <option value="16">16 GB</option>
-                        <option value="32">32 GB</option>
-                        <option value="64">64 GB</option>
-                    </select>
-                </div>
 
-                <!-- Divisor visual -->
-                <div class="h-4 w-px bg-gray-800"></div>
-
-                <!-- Selector de Almacenamiento -->
-                <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
-                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Diskoa:</span>
-                    <select id="selectStorage" onchange="filterLaptopsAndUpdate()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
-                        <option value="All">Guztiak</option>
-                        <option value="256">256 GB</option>
-                        <option value="512">512 GB</option>
-                        <option value="1024">1024 GB (1 TB)</option>
-                        <option value="2048">2048 GB (2 TB)</option>
-                    </select>
-                </div>
-
-                <!-- Divisor visual -->
-                <div class="h-4 w-px bg-gray-800"></div>
-
-                <!-- Selector de Ordenagailua -->
+                <!-- Selector de portátil (solo ordenadores) -->
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'ordenadores'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Gailua:</span>
                     <select id="selectPortatil" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
                         <option value="All">Ordenagailu eramangarri guztiak</option>
                     </select>
                 </div>
+                <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'ordenadores'}"></div>
 
-                <!-- Divisor visual -->
-                <div class="h-4 w-px bg-gray-800"></div>
-
+                <!-- Filtro RAM (solo empresa) -->
+                <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">RAM:</span>
+                    <select id="selectRam" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value=".*">Guztiak</option>
+                        <option value="8GB">8 GB</option>
+                        <option value="16GB">16 GB</option>
+                        <option value="32GB">32 GB</option>
+                        <option value="64GB">64 GB</option>
+                    </select>
+                </div>
                 <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
 
+                <!-- Filtro Diskoa/Storage (solo empresa) -->
+                <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Diskoa:</span>
+                    <select id="selectStorage" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value=".*">Guztiak</option>
+                        <option value="256GB SSD">256 GB SSD</option>
+                        <option value="512GB SSD">512 GB SSD</option>
+                        <option value="1TB SSD">1 TB SSD</option>
+                        <option value="2TB SSD">2 TB SSD</option>
+                    </select>
+                </div>
+                <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
+
+                <!-- Top N (solo empresa) -->
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Top:</span>
                     <select id="selectTopK" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
@@ -112,8 +106,9 @@
                         <option value="15">15</option>
                     </select>
                 </div>
+                <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
 
-                <!-- Selector de Rango de Tiempo -->
+                <!-- Selector de rango de tiempo -->
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa' || dashboardTipo == 'ordenadores'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Tartea:</span>
                     <select id="selectTime" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
@@ -222,17 +217,17 @@
         /*<![CDATA[*/
         const empresaId = [[${empresaId}]];
         const dashboardTipo = [[${dashboardTipo}]];
-        const portatilesVictoria = [[${portatiles}]];
+        const portatilesCassandra = [[${portatiles}]];
         
-        // Fallback local para desarrollo: coincide con seed-victoria.sh si VictoriaMetrics no responde.
+        // Fallback local para desarrollo: coincide con seed-cassandra.cql si Cassandra no responde.
         const RAM_TOTAL_OPCIONES = [8, 16, 32, 64];
         const STORAGE_TOTAL_OPCIONES = [256, 512, 1024, 2048];
         const PROCESADORES = ["Intel_i5_1135G7", "Intel_i7_1165G7", "AMD_Ryzen_5_5600U", "AMD_Ryzen_7_5800U", "Apple_M1"];
         
         const laptops = [];
         
-        if (Array.isArray(portatilesVictoria) && portatilesVictoria.length > 0) {
-            portatilesVictoria.forEach(name => laptops.push({
+        if (Array.isArray(portatilesCassandra) && portatilesCassandra.length > 0) {
+            portatilesCassandra.forEach(name => laptops.push({
                 name: name,
                 ram: '',
                 storage: '',
@@ -306,11 +301,6 @@
             updatePanela();
         });
 
-        // RAM edo biltegiratze iragazkiak aldatzean deitzen da
-        function filterLaptopsAndUpdate() {
-            updatePanela();
-        }
-
 
         function updateTopPanelHeights() {
             if (dashboardTipo !== 'empresa') { return; }
@@ -326,8 +316,8 @@
         function updatePanela() {
             const timeValue = document.getElementById('selectTime')?.value || (dashboardTipo === 'empresa' ? 'now-30d' : 'now-24h');
             const portatilValue = document.getElementById('selectPortatil')?.value || (laptops[0]?.name || '');
-            const ramValue = document.getElementById('selectRam')?.value || 'All';
-            const storageValue = document.getElementById('selectStorage')?.value || 'All';
+            const ramValue = document.getElementById('selectRam')?.value || '.*';
+            const storageValue = document.getElementById('selectStorage')?.value || '.*';
             const topKValue = document.getElementById('selectTopK')?.value || '10';
             updateTopPanelHeights();
             const iframes = document.querySelectorAll('main iframe');
@@ -338,12 +328,12 @@
                 url.searchParams.set('to', 'now');
 
                 if (dashboardTipo === 'ordenadores') {
-                    url.searchParams.set('var-portatil', portatilValue === 'All' ? '.*' : portatilValue);
+                    url.searchParams.set('var-nombre', portatilValue === 'All' ? laptops[0]?.name || '' : portatilValue);
                 }
 
                 if (dashboardTipo === 'empresa') {
-                    url.searchParams.set('var-ram', ramValue === 'All' ? '.*' : ramValue);
-                    url.searchParams.set('var-storage', storageValue === 'All' ? '.*' : storageValue);
+                    url.searchParams.set('var-ram', ramValue);
+                    url.searchParams.set('var-storage', storageValue);
                     url.searchParams.set('var-topk', topKValue);
                 }
 

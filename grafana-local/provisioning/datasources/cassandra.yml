@@ -1,0 +1,17 @@
+apiVersion: 1
+
+datasources:
+  - name: Cassandra
+    uid: cassandra
+    type: hadesarchitect-cassandra-datasource
+    access: proxy
+    url: webhardmon-cassandra:9042
+    isDefault: true
+    editable: true
+    jsonData:
+      keyspace: webhardmon
+      consistency: ONE
+      user: cassandra
+      useCustomTLS: false
+    secureJsonData:
+      password: cassandra

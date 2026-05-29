@@ -5,7 +5,7 @@ import com.telemetria.web.model.Licencia;
 import com.telemetria.web.repository.LicenciaRepository;
 import com.telemetria.web.security.AdminPrincipal;
 import com.telemetria.web.service.GrafanaService;
-import com.telemetria.web.service.VictoriaMetricsService;
+import com.telemetria.web.service.CassandraTelemetryService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,14 +31,14 @@ public class WebController {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final GrafanaService grafanaService;
-    private final VictoriaMetricsService victoriaMetricsService;
+    private final CassandraTelemetryService cassandraTelemetryService;
     private final LicenciaRepository licenciaRepository;
 
     public WebController(GrafanaService grafanaService,
-                         VictoriaMetricsService victoriaMetricsService,
+                         CassandraTelemetryService cassandraTelemetryService,
                          LicenciaRepository licenciaRepository) {
         this.grafanaService = grafanaService;
-        this.victoriaMetricsService = victoriaMetricsService;
+        this.cassandraTelemetryService = cassandraTelemetryService;
         this.licenciaRepository = licenciaRepository;
     }
 
@@ -80,7 +80,7 @@ public class WebController {
         model.addAttribute("dashboardTipo", "ordenadores");
         model.addAttribute("seccionActiva", "ordenadores");
         model.addAttribute("dashboardTitulo", "Ordenagailuen panela");
-        model.addAttribute("portatiles", victoriaMetricsService.findPortatilesByEmpresa(empresaId));
+        model.addAttribute("portatiles", cassandraTelemetryService.findNombresByEmpresa(empresaId));
 
         return "layout";
     }
@@ -93,8 +93,8 @@ public class WebController {
 
         Long empresaId = principal.getEmpresaId();
         List<Licencia> licencias = licenciaRepository.findByEmpresaIdOrderByPortatilAsc(empresaId);
-        List<String> portatilesVictoria = victoriaMetricsService.findPortatilesByEmpresa(empresaId);
-        List<LicenciaOrdenadorView> licenciasOrdenadores = buildLicenciasOrdenadores(portatilesVictoria, licencias);
+        List<String> portatilesCassandra = cassandraTelemetryService.findNombresByEmpresa(empresaId);
+        List<LicenciaOrdenadorView> licenciasOrdenadores = buildLicenciasOrdenadores(portatilesCassandra, licencias);
         List<String> portatilesSinLicencia = licenciasOrdenadores.stream()
                 .filter(item -> item.licencia() == null)
                 .map(LicenciaOrdenadorView::portatil)
@@ -106,8 +106,8 @@ public class WebController {
         model.addAttribute("dashboardTitulo", "Lizentziak");
         model.addAttribute("licencias", licencias);
         model.addAttribute("licenciasOrdenadores", licenciasOrdenadores);
-        model.addAttribute("portatilesSinLicencia", portatilesSinLicencia);
-        model.addAttribute("portatilesDetectados", portatilesVictoria.size());
+        model.addAttribute("portatilesSinLizentzia", portatilesSinLicencia);
+        model.addAttribute("portatilesDetectados", portatilesCassandra.size());
         model.addAttribute("codigoSugerido", generarCodigoLicenciaUnico());
 
         return "licencias";
@@ -177,17 +177,17 @@ public class WebController {
         return "redirect:/licencias";
     }
 
-    private List<LicenciaOrdenadorView> buildLicenciasOrdenadores(List<String> portatilesVictoria, List<Licencia> licencias) {
+    private List<LicenciaOrdenadorView> buildLicenciasOrdenadores(List<String> portatilesCassandra, List<Licencia> licencias) {
         Map<String, Licencia> licenciaPorPortatil = licencias.stream()
                 .collect(Collectors.toMap(Licencia::getPortatil, Function.identity(), (a, b) -> a));
 
         LinkedHashSet<String> portatiles = new LinkedHashSet<>();
-        portatiles.addAll(portatilesVictoria);
+        portatiles.addAll(portatilesCassandra);
         licencias.stream().map(Licencia::getPortatil).forEach(portatiles::add);
 
         List<LicenciaOrdenadorView> resultado = new ArrayList<>();
         for (String portatil : portatiles) {
-            resultado.add(new LicenciaOrdenadorView(portatil, licenciaPorPortatil.get(portatil), portatilesVictoria.contains(portatil)));
+            resultado.add(new LicenciaOrdenadorView(portatil, licenciaPorPortatil.get(portatil), portatilesCassandra.contains(portatil)));
         }
         return resultado;
     }

@@ -1,23 +1,30 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:telemetriadb}?sslmode=${DB_SSL_MODE:prefer}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:telemetriadb}?useSSL=${DB_USE_SSL:false}&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${DB_USER:admin}
     password: ${DB_PASS:secret}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  cassandra:
+    contact-points: ${CASSANDRA_CONTACT_POINTS:localhost}
+    port: ${CASSANDRA_PORT:9042}
+    keyspace-name: ${CASSANDRA_KEYSPACE:webhardmon}
+    local-datacenter: ${CASSANDRA_LOCAL_DATACENTER:datacenter1}
+    username: ${CASSANDRA_USERNAME:cassandra}
+    password: ${CASSANDRA_PASSWORD:cassandra}
 
 app:
   grafana:
     dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     empresa-dashboard-url: ${GRAFANA_EMPRESA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     ordenadores-dashboard-url: ${GRAFANA_ORDENADORES_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-ordenadores/webhardmon-ordenadores}
-  victoriametrics:
-    url: ${VICTORIA_METRICS_URL:http://localhost:8428}
 
 server:
   port: 8080
