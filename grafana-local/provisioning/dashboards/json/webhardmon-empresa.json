@@ -55,7 +55,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -91,7 +91,7 @@
           "target": "SELECT avg(cpu_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "CPU media",
+      "title": "CPU",
       "type": "stat"
     },
     {
@@ -128,8 +128,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 4,
+        "w": 3,
+        "x": 3,
         "y": 0
       },
       "id": 2,
@@ -164,7 +164,7 @@
           "target": "SELECT avg(ram_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "RAM media",
+      "title": "RAM",
       "type": "stat"
     },
     {
@@ -201,8 +201,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 8,
+        "w": 3,
+        "x": 6,
         "y": 0
       },
       "id": 3,
@@ -237,7 +237,7 @@
           "target": "SELECT avg(disco_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Diskoa media",
+      "title": "Diskoa",
       "type": "stat"
     },
     {
@@ -272,8 +272,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 12,
+        "w": 3,
+        "x": 9,
         "y": 0
       },
       "id": 4,
@@ -308,7 +308,78 @@
           "target": "SELECT avg(temperatura) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Tenperatura media",
+      "title": "Tenperatura",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 60
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "format": "table",
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(stress_score) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
+        }
+      ],
+      "title": "Estresa",
       "type": "stat"
     },
     {
@@ -345,8 +416,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 16,
+        "w": 5,
+        "x": 15,
         "y": 0
       },
       "id": 5,
@@ -379,7 +450,7 @@
           "target": "SELECT avg(bateria_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Bateria media",
+      "title": "Bateria",
       "type": "gauge"
     },
     {
@@ -484,7 +555,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenador"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -500,7 +571,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU media %"
+              "options": "CPU batez bestekoa %"
             },
             "properties": [
               {
@@ -536,7 +607,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "CPU media %"
+            "displayName": "CPU batez bestekoa %"
           }
         ]
       },
@@ -555,7 +626,7 @@
           "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Top $topk peores — Mayor uso CPU",
+      "title": "Top $topk okerrenak — CPU erabilera handiena",
       "transformations": [
         {
           "id": "filterByValue",
@@ -637,8 +708,8 @@
               "cpu_percent (mean)": 1
             },
             "renameByName": {
-              "nombre": "Ordenador",
-              "cpu_percent (mean)": "CPU media %"
+              "nombre": "Ordenagailua",
+              "cpu_percent (mean)": "CPU batez bestekoa %"
             }
           }
         }
@@ -684,7 +755,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenador"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -700,7 +771,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "RAM media %"
+              "options": "RAM batez bestekoa %"
             },
             "properties": [
               {
@@ -736,7 +807,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "RAM media %"
+            "displayName": "RAM batez bestekoa %"
           }
         ]
       },
@@ -755,7 +826,7 @@
           "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Top $topk peores — Mayor uso RAM",
+      "title": "Top $topk okerrenak — RAM erabilera handiena",
       "transformations": [
         {
           "id": "filterByValue",
@@ -837,8 +908,8 @@
               "ram_percent (mean)": 1
             },
             "renameByName": {
-              "nombre": "Ordenador",
-              "ram_percent (mean)": "RAM media %"
+              "nombre": "Ordenagailua",
+              "ram_percent (mean)": "RAM batez bestekoa %"
             }
           }
         }
@@ -884,7 +955,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenador"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -900,7 +971,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Disco media %"
+              "options": "Disko batez bestekoa %"
             },
             "properties": [
               {
@@ -936,7 +1007,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Disco media %"
+            "displayName": "Disko batez bestekoa %"
           }
         ]
       },
@@ -955,7 +1026,7 @@
           "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Top $topk peores — Mayor uso Disco",
+      "title": "Top $topk okerrenak — Disko erabilera handiena",
       "transformations": [
         {
           "id": "filterByValue",
@@ -1037,8 +1108,8 @@
               "disco_percent (mean)": 1
             },
             "renameByName": {
-              "nombre": "Ordenador",
-              "disco_percent (mean)": "Disco media %"
+              "nombre": "Ordenagailua",
+              "disco_percent (mean)": "Disko batez bestekoa %"
             }
           }
         }
@@ -1084,7 +1155,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenador"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1100,7 +1171,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Temp media °C"
+              "options": "Tenp. batez bestekoa °C"
             },
             "properties": [
               {
@@ -1136,7 +1207,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Temp media °C"
+            "displayName": "Tenp. batez bestekoa °C"
           }
         ]
       },
@@ -1155,7 +1226,7 @@
           "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Top $topk peores — Mayor Temperatura",
+      "title": "Top $topk okerrenak — Tenperatura altuena",
       "transformations": [
         {
           "id": "filterByValue",
@@ -1237,8 +1308,8 @@
               "temperatura (mean)": 1
             },
             "renameByName": {
-              "nombre": "Ordenador",
-              "temperatura (mean)": "Temp media °C"
+              "nombre": "Ordenagailua",
+              "temperatura (mean)": "Tenp. batez bestekoa °C"
             }
           }
         }
@@ -1284,7 +1355,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenador"
+              "options": "Ordenagailua"
             },
             "properties": [
               {
@@ -1300,7 +1371,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Estres medio"
+              "options": "Estres batez bestekoa"
             },
             "properties": [
               {
@@ -1336,7 +1407,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Estres medio"
+            "displayName": "Estres batez bestekoa"
           }
         ]
       },
@@ -1355,7 +1426,7 @@
           "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "title": "Top $topk peores — Mayor Estres",
+      "title": "Top $topk okerrenak — Estres handiena",
       "transformations": [
         {
           "id": "filterByValue",
@@ -1437,8 +1508,8 @@
               "stress_score (mean)": 1
             },
             "renameByName": {
-              "nombre": "Ordenador",
-              "stress_score (mean)": "Estres medio"
+              "nombre": "Ordenagailua",
+              "stress_score (mean)": "Estres batez bestekoa"
             }
           }
         }
@@ -1462,7 +1533,7 @@
           "value": "1"
         },
         "hide": 2,
-        "label": "Empresa",
+        "label": "Enpresa",
         "name": "empresa",
         "query": "1",
         "skipUrlSync": true,
@@ -1497,7 +1568,7 @@
       },
       {
         "current": {
-          "text": "Todas",
+          "text": "Guztiak",
           "value": ".*"
         },
         "label": "RAM",
@@ -1505,7 +1576,7 @@
         "options": [
           {
             "selected": true,
-            "text": "Todas",
+            "text": "Guztiak",
             "value": ".*"
           },
           {
@@ -1534,15 +1605,15 @@
       },
       {
         "current": {
-          "text": "Todas",
+          "text": "Guztiak",
           "value": ".*"
         },
-        "label": "Almacenamiento",
+        "label": "Biltegiratzea",
         "name": "storage",
         "options": [
           {
             "selected": true,
-            "text": "Todas",
+            "text": "Guztiak",
             "value": ".*"
           },
           {
@@ -1579,5 +1650,5 @@
   "timezone": "browser",
   "title": "WebHardMon - Enpresaren panela",
   "uid": "webhardmon-empresa",
-  "version": 17
+  "version": 19
 }
