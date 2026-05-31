@@ -1,2 +1,41 @@
+# Secretos y configuración local
 .env
+.env.local
+.env.*.local
+
+# Build Maven
 target/
+*.jar
+*.war
+*.class
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - VS Code
+.vscode/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+
+# IDE - NetBeans
+nbproject/
+nb-configuration.xml
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volúmenes locales generados
+grafana-local/grafana_data/
+grafana-local/mysql_data/
+grafana-local/cassandra_data/

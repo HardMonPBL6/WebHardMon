@@ -1,0 +1,82 @@
+services:
+  cassandra:
+    image: cassandra:5.0
+    container_name: webhardmon-cassandra
+    restart: unless-stopped
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: webhardmon
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  cassandra-init:
+    image: cassandra:5.0
+    container_name: webhardmon-cassandra-init
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    restart: "no"
+    volumes:
+      - ../schema-cassandra.cql:/schema.cql:ro
+      - ../seed-cassandra.cql:/seed.cql:ro
+    entrypoint: >
+      bash -c "
+        echo 'Cassandra ready, applying schema...' &&
+        cqlsh webhardmon-cassandra -f /schema.cql &&
+        cqlsh webhardmon-cassandra -f /seed.cql &&
+        echo 'Schema and seed applied.'
+      "
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    container_name: webhardmon-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SERVER_DOMAIN: localhost
+      GF_SERVER_ROOT_URL: http://localhost:3000/
+      GF_SERVER_SERVE_FROM_SUB_PATH: "false"
+      GF_INSTALL_PLUGINS: hadesarchitect-cassandra-datasource
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: hadesarchitect-cassandra-datasource
+      GF_AUTH_PROXY_ENABLED: "false"
+      GF_AUTH_BASIC_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_NAME: "Main Org."
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./provisioning:/etc/grafana/provisioning
+
+  mysql:
+    image: mysql:8.4
+    container_name: webhardmon-mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: telemetriadb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  grafana_data:
+  cassandra_data:
+  mysql_data:

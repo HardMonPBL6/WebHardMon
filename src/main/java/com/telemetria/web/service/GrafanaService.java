@@ -2,32 +2,48 @@ package com.telemetria.web.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class GrafanaService {
 
-    @Value("${app.grafana.base-url}")
-    private String grafanaBaseUrl;
+    @Value("${app.grafana.empresa-dashboard-url:${app.grafana.dashboard-url}}")
+    private String empresaDashboardUrl;
 
-    @Value("${app.grafana.public-url:}")
-    private String grafanaPublicUrl;
+    @Value("${app.grafana.ordenadores-dashboard-url:${app.grafana.dashboard-url}}")
+    private String ordenadoresDashboardUrl;
 
-    /**
-     * Devuelve la URL del iFrame de Grafana incluyendo el parámetro de tenant.
-     * En Grafana se debe configurar la variable de dashboard "var-empresa" para filtrar métricas.
-     */
-    public String buildDashboardUrl(String dashboardUid, Long empresaId) {
-        // Grafana kiosk mode (theme=dark y panel limpio sin menú lateral)
-        return String.format("%s/d/%s/dash?orgId=1&theme=dark&kiosk=tv&var-empresa=%d", 
-                grafanaBaseUrl, dashboardUid, empresaId);
+    public String buildEmpresaDashboardUrl(Long empresaId) {
+        return buildDashboardUrl(empresaDashboardUrl, empresaId);
     }
 
-    /**
-     * Devuelve la URL pública completa del dashboard, si está configurada.
-     */
-    public String buildPublicDashboardUrl() {
-        return (grafanaPublicUrl != null && !grafanaPublicUrl.isBlank())
-                ? grafanaPublicUrl
-                : null;
+    public String buildOrdenadoresDashboardUrl(Long empresaId) {
+        return buildDashboardUrl(ordenadoresDashboardUrl, empresaId);
+    }
+
+    private String buildDashboardUrl(String dashboardUrl, Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El usuario autenticado no tiene empresa asociada");
+        }
+
+        return UriComponentsBuilder
+                .fromUriString(toSoloPanelUrl(dashboardUrl))
+                .queryParam("orgId", "1")
+                .queryParam("theme", "dark")
+                .queryParam("from", "now-30d")
+                .queryParam("to", "now")
+                .queryParam("var-empresa", empresaId)
+                .build()
+                .toUriString();
+    }
+
+    private String toSoloPanelUrl(String dashboardUrl) {
+        if (dashboardUrl == null || dashboardUrl.isBlank()) {
+            throw new IllegalArgumentException("No se ha configurado la URL del dashboard de Grafana");
+        }
+
+        // Grafana muestra un panel individual con /d-solo/... y el parametro panelId.
+        // Si en application.yml o en .env se mantiene una URL /d/ normal, la convertimos aqui.
+        return dashboardUrl.replace("/d/", "/d-solo/");
     }
 }

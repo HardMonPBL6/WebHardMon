@@ -1,0 +1,1093 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "uid": "webhardmon-ordenadores",
+  "title": "WebHardMon - Ordenagailuaren panela",
+  "tags": [
+    "webhardmon",
+    "cassandra"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "empresa",
+        "type": "constant",
+        "query": "1",
+        "current": {
+          "value": "1",
+          "text": "1"
+        },
+        "hide": 2,
+        "label": "Enpresa",
+        "skipUrlSync": false
+      },
+      {
+        "name": "nombre",
+        "type": "textbox",
+        "query": "PC-1-1",
+        "current": {
+          "value": "PC-1-1",
+          "text": "PC-1-1"
+        },
+        "hide": 2,
+        "label": "Ordenagailua",
+        "skipUrlSync": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "CPU",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, cpu_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "cpu_percent": "CPU %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "RAM",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, ram_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "ram_percent": "RAM %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Diskoa",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, disco_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "disco_percent": "Diskoa %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Tenperatura",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, temperatura, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "temperatura": "Tenperatura"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 5,
+      "type": "gauge",
+      "title": "Bateria",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, bateria_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "bateria_percent": "Bateria %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "green",
+                "value": 50
+              }
+            ]
+          },
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Estresa",
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, stress_score, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true,
+              "ts": true
+            },
+            "renameByName": {
+              "stress_score": "Estresa"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": false,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": ""
+        },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "CPU denboran",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, cpu_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "cpu_percent": "CPU %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "displayName": "CPU %",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "RAM denboran",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, ram_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "ram_percent": "RAM %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "displayName": "RAM %",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Diskoa denboran",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, disco_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "disco_percent": "Diskoa %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "displayName": "Diskoa %",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Tenperatura denboran",
+      "gridPos": {
+        "x": 12,
+        "y": 12,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, temperatura, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "temperatura": "Tenperatura"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "displayName": "Tenperatura",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Bateria denboran",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, bateria_percent, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "bateria_percent": "Bateria %"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "displayName": "Bateria %",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "green",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Estresa denboran",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, stress_score, ts FROM mediciones WHERE empresa_id = $empresa AND nombre = '$nombre' AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "time_series"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "nombre": true
+            },
+            "renameByName": {
+              "ts": "Ordua",
+              "stress_score": "Estresa"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "Estresa",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "mean",
+            "max",
+            "min"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "table",
+      "title": "Ezaugarri teknikoak",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 4
+      },
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "target": "SELECT nombre, procesador, ram, almacenamiento, ultima_vez FROM ordenadores WHERE empresa_id = $empresa AND nombre = '$nombre'",
+          "rawQuery": true,
+          "queryType": "query",
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "nombre": "Ordenagailua",
+              "procesador": "Prozesadorea",
+              "ram": "RAM",
+              "almacenamiento": "Diskoa",
+              "ultima_vez": "Azken konexioa"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "string",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Azken konexioa"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      }
+    }
+  ]
+}

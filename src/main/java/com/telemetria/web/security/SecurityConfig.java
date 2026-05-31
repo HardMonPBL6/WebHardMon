@@ -18,16 +18,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/js/**", "/login").permitAll()
-                .anyRequest().authenticated()
-            )
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+           .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/css/**", "/js/**", "/login").permitAll()
+            .requestMatchers("/api/agente/**").permitAll()
+            .anyRequest().authenticated()
+        )
             .formLogin(form -> form
-                // .loginPage("/login")  // Custom login page si la creamos luego
+                .loginPage("/login")
                 .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?error")
                 .permitAll()
             )
-            .logout(logout -> logout.permitAll());
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll());
         return http.build();
     }
 }

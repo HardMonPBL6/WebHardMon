@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -u admin:admin \"http://localhost:3000/api/search?type=dash-db\")",
+      "Bash(python3 -c \"import json,sys; [print\\(f'uid={d[\\\\\"uid\\\\\"]} title={d[\\\\\"title\\\\\"]}'\\) for d in json.load\\(sys.stdin\\)]\")",
+      "Bash(curl -s -u admin:admin -X DELETE \"http://localhost:3000/api/dashboards/uid/webhardmon-cassandra-raw\")",
+      "Bash(curl -s -u admin:admin -X DELETE \"http://localhost:3000/api/dashboards/uid/webhardmon-cassandra-clean\")",
+      "Bash(curl -s -u admin:admin -X DELETE \"http://localhost:3000/api/dashboards/uid/webhardmon-cassandra-ordenadores\")",
+      "Bash(rm webhardmon-cassandra-raw.json)",
+      "Bash(mv webhardmon-cassandra.json webhardmon-empresa.json)",
+      "Bash(mv webhardmon-cassandra-ordenadores.json webhardmon-ordenadores.json)",
+      "Bash(python3 -c \"import json,sys; [print\\(f'  uid={d[\\\\\"uid\\\\\"]:45s} title={d[\\\\\"title\\\\\"]}'\\) for d in json.load\\(sys.stdin\\)]\")",
+      "Bash(curl -s -u admin:admin -X DELETE http://localhost:3000/api/dashboards/uid/__TRACKED_VAR__)",
+      "Bash(python3 -c \"import json,sys; dbs=json.load\\(sys.stdin\\); [print\\(f'  uid={d[\\\\\"uid\\\\\"]:45s} title={d[\\\\\"title\\\\\"]}'\\) for d in dbs]; print\\(f'\\\\nTotal: {len\\(dbs\\)} dashboards'\\)\")"
+    ]
+  }
+}
