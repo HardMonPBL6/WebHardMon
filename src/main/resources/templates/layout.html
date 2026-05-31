@@ -108,6 +108,16 @@
                 </div>
                 <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
 
+                <!-- Orden Top (solo empresa) -->
+                <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
+                    <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Ordena:</span>
+                    <select id="selectOrden" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                        <option value="beheranzko" selected>Beheranzkoa</option>
+                        <option value="goranzko">Goranzkoa</option>
+                    </select>
+                </div>
+                <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
+
                 <!-- Selector de rango de tiempo -->
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa' || dashboardTipo == 'ordenadores'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Tartea:</span>
@@ -323,6 +333,7 @@
             const ramValue = document.getElementById('selectRam')?.value || '.*';
             const storageValue = document.getElementById('selectStorage')?.value || '.*';
             const topKValue = document.getElementById('selectTopK')?.value || '10';
+            const ordenValue = document.getElementById('selectOrden')?.value || 'beheranzko';
             updateTopPanelHeights();
             const iframes = document.querySelectorAll('main iframe');
 
@@ -339,6 +350,11 @@
                     url.searchParams.set('var-ram', ramValue);
                     url.searchParams.set('var-storage', storageValue);
                     url.searchParams.set('var-topk', topKValue);
+                    if (iframe.closest('.top-panel')) {
+                        const pid = parseInt(url.searchParams.get('panelId'), 10);
+                        const base = (pid >= 13 && pid <= 17) ? pid - 6 : pid;
+                        url.searchParams.set('panelId', ordenValue === 'goranzko' ? base + 6 : base);
+                    }
                 }
 
                 iframe.src = url.toString();
