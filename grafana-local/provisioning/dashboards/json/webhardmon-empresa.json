@@ -1,167 +1,114 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
-  "uid": "webhardmon-empresa",
-  "title": "WebHardMon - Enpresaren panela",
-  "tags": [
-    "webhardmon",
-    "cassandra"
-  ],
-  "timezone": "browser",
-  "schemaVersion": 41,
-  "version": 2,
-  "refresh": "30s",
-  "time": {
-    "from": "now-30d",
-    "to": "now"
-  },
-  "templating": {
-    "list": [
-      {
-        "name": "empresa",
-        "type": "textbox",
-        "query": "1",
-        "current": {
-          "value": "1",
-          "text": "1"
-        },
-        "hide": 2,
-        "label": "Enpresa",
-        "skipUrlSync": false
-      },
-      {
-        "name": "ram",
-        "type": "textbox",
-        "query": ".*",
-        "current": {
-          "value": ".*",
-          "text": ".*"
-        },
-        "hide": 2,
-        "label": "RAM",
-        "skipUrlSync": false
-      },
-      {
-        "name": "storage",
-        "type": "textbox",
-        "query": ".*",
-        "current": {
-          "value": ".*",
-          "text": ".*"
-        },
-        "hide": 2,
-        "label": "Diskoa",
-        "skipUrlSync": false
-      },
-      {
-        "name": "topk",
-        "type": "textbox",
-        "query": "10",
-        "current": {
-          "value": "10",
-          "text": "10"
-        },
-        "hide": 2,
-        "label": "Top",
-        "skipUrlSync": false
-      }
-    ]
-  },
+  "id": 6,
+  "links": [],
   "panels": [
     {
-      "id": 1,
-      "type": "stat",
-      "title": "CPU",
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
       "gridPos": {
+        "h": 4,
+        "w": 4,
         "x": 0,
-        "y": 0,
-        "w": 4,
-        "h": 4
+        "y": 0
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, cpu_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "format": "table",
           "queryType": "query",
-          "format": "time_series"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(cpu_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
+      "title": "CPU media",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -172,114 +119,69 @@
                 "value": 90
               }
             ]
-          }
+          },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
         },
         "overrides": []
       },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "RAM",
       "gridPos": {
+        "h": 4,
+        "w": 4,
         "x": 4,
-        "y": 0,
-        "w": 4,
-        "h": 4
+        "y": 0
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, ram_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "format": "table",
           "queryType": "query",
-          "format": "time_series"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(ram_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
+      "title": "RAM media",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -290,232 +192,69 @@
                 "value": 90
               }
             ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Diskoa",
-      "gridPos": {
-        "x": 8,
-        "y": 0,
-        "w": 4,
-        "h": 4
-      },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "hadesarchitect-cassandra-datasource",
-            "uid": "cassandra"
           },
-          "target": "SELECT nombre, disco_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
-          "queryType": "query",
-          "format": "time_series"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
           "unit": "percent",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 75
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          }
+          "max": 100,
+          "min": 0
         },
         "overrides": []
       },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 4,
-      "type": "stat",
-      "title": "Tenperatura",
       "gridPos": {
-        "x": 12,
-        "y": 0,
+        "h": 4,
         "w": 4,
-        "h": 4
+        "x": 8,
+        "y": 0
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, temperatura, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "format": "table",
           "queryType": "query",
-          "format": "time_series"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(disco_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
+      "title": "Diskoa media",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "celsius",
+          "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -526,116 +265,67 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "celsius"
         },
         "overrides": []
       },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 5,
-      "type": "gauge",
-      "title": "Bateria",
       "gridPos": {
-        "x": 16,
-        "y": 0,
+        "h": 4,
         "w": 4,
-        "h": 4
+        "x": 12,
+        "y": 0
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, bateria_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "format": "table",
           "queryType": "query",
-          "format": "time_series"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(temperatura) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
+      "title": "Tenperatura media",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -646,186 +336,243 @@
                 "value": 50
               }
             ]
-          }
+          },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
         },
         "overrides": []
       },
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      }
-    },
-    {
-      "id": 6,
-      "type": "stat",
-      "title": "Estresa",
       "gridPos": {
-        "x": 20,
-        "y": 0,
+        "h": 4,
         "w": 4,
-        "h": 4
+        "x": 16,
+        "y": 0
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
+      "id": 5,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, stress_score, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "format": "table",
           "queryType": "query",
-          "format": "time_series"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT avg(bateria_percent) AS valor FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "nombre": true,
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        }
-      ],
+      "title": "Bateria media",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "decimals": 0,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
+                "color": "blue",
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "short"
         },
         "overrides": []
       },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 6,
       "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": [
-            "mean"
-          ],
-          "fields": ""
-        },
-        "orientation": "auto",
-        "textMode": "auto",
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
-      }
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "format": "table",
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT count(*) AS valor FROM ordenadores WHERE empresa_id = $empresa"
+        }
+      ],
+      "title": "Ordenagailuak",
+      "type": "stat"
     },
     {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ordenador"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.width",
+                "value": 320
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU media %"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "id": 7,
-      "type": "table",
-      "title": "CPU gehien erabili dutenak",
-      "description": "RAM eta biltegiratze iragazkiak aplikatuta. Handitik txikira ordenatuta.",
-      "gridPos": {
-        "x": 0,
-        "y": 4,
-        "w": 24,
-        "h": 10
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "CPU media %"
+          }
+        ]
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, cpu_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "datasourceId": 1,
+          "format": "table",
           "queryType": "query",
-          "format": "table"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
+      "title": "Top $topk peores — Mayor uso CPU",
       "transformations": [
         {
           "id": "filterByValue",
           "options": {
             "filters": [
               {
-                "fieldName": "ram",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${ram}"
+                    "value": "$ram"
                   }
-                }
+                },
+                "fieldName": "ram"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
@@ -833,53 +580,44 @@
           "options": {
             "filters": [
               {
-                "fieldName": "almacenamiento",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${storage}"
+                    "value": "$storage"
                   }
-                }
+                },
+                "fieldName": "almacenamiento"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
-          "id": "organize",
+          "id": "groupBy",
           "options": {
-            "excludeByName": {
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
+            "fields": {
+              "nombre": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "cpu_percent": {
+                "aggregations": [
+                  "mean"
+                ],
+                "operation": "aggregate"
+              }
             }
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": [
-              "nombre"
-            ]
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "mean"
-            ],
-            "mode": "seriesToRows"
           }
         },
         {
           "id": "sortBy",
           "options": {
+            "fields": {},
             "sort": [
               {
-                "field": "Mean",
-                "desc": true
+                "desc": true,
+                "field": "cpu_percent (mean)"
               }
             ]
           }
@@ -887,29 +625,48 @@
         {
           "id": "limit",
           "options": {
-            "limitField": "${topk}"
+            "limitField": "$topk"
           }
         },
         {
           "id": "organize",
           "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "nombre": 0,
+              "cpu_percent (mean)": 1
+            },
             "renameByName": {
-              "Field": "Ordenagailua",
-              "Mean": "CPU %"
+              "nombre": "Ordenador",
+              "cpu_percent (mean)": "CPU media %"
             }
           }
         }
       ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
           "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -921,135 +678,101 @@
               }
             ]
           },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            }
-          }
+          "unit": "percent"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenagailua"
+              "options": "Ordenador"
             },
             "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              },
               {
                 "id": "unit",
                 "value": "string"
               },
               {
-                "id": "custom.align",
-                "value": "left"
+                "id": "custom.width",
+                "value": 320
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU %"
+              "options": "RAM media %"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 560
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              },
-              {
                 "id": "custom.cellOptions",
                 "value": {
-                  "type": "gauge",
                   "mode": "gradient",
+                  "type": "gauge",
                   "valueDisplayMode": "text"
                 }
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
               }
             ]
           }
         ]
       },
-      "options": {
-        "showHeader": true,
-        "cellHeight": "md",
-        "footer": {
-          "show": false
-        },
-        "sortBy": [
-          {
-            "displayName": "CPU %",
-            "desc": true
-          }
-        ]
-      }
-    },
-    {
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
       "id": 8,
-      "type": "table",
-      "title": "RAM gehien erabili dutenak",
-      "description": "RAM eta biltegiratze iragazkiak aplikatuta. Handitik txikira ordenatuta.",
-      "gridPos": {
-        "x": 0,
-        "y": 14,
-        "w": 24,
-        "h": 10
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "RAM media %"
+          }
+        ]
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, ram_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "datasourceId": 1,
+          "format": "table",
           "queryType": "query",
-          "format": "table"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
+      "title": "Top $topk peores — Mayor uso RAM",
       "transformations": [
         {
           "id": "filterByValue",
           "options": {
             "filters": [
               {
-                "fieldName": "ram",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${ram}"
+                    "value": "$ram"
                   }
-                }
+                },
+                "fieldName": "ram"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
@@ -1057,53 +780,44 @@
           "options": {
             "filters": [
               {
-                "fieldName": "almacenamiento",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${storage}"
+                    "value": "$storage"
                   }
-                }
+                },
+                "fieldName": "almacenamiento"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
-          "id": "organize",
+          "id": "groupBy",
           "options": {
-            "excludeByName": {
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
+            "fields": {
+              "nombre": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "ram_percent": {
+                "aggregations": [
+                  "mean"
+                ],
+                "operation": "aggregate"
+              }
             }
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": [
-              "nombre"
-            ]
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "mean"
-            ],
-            "mode": "seriesToRows"
           }
         },
         {
           "id": "sortBy",
           "options": {
+            "fields": {},
             "sort": [
               {
-                "field": "Mean",
-                "desc": true
+                "desc": true,
+                "field": "ram_percent (mean)"
               }
             ]
           }
@@ -1111,253 +825,48 @@
         {
           "id": "limit",
           "options": {
-            "limitField": "${topk}"
+            "limitField": "$topk"
           }
         },
         {
           "id": "organize",
           "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "nombre": 0,
+              "ram_percent (mean)": 1
+            },
             "renameByName": {
-              "Field": "Ordenagailua",
-              "Mean": "RAM %"
+              "nombre": "Ordenador",
+              "ram_percent (mean)": "RAM media %"
             }
           }
         }
       ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          },
           "custom": {
             "align": "auto",
             "cellOptions": {
               "type": "auto"
-            }
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Ordenagailua"
             },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              },
-              {
-                "id": "unit",
-                "value": "string"
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              }
-            ]
+            "inspect": false
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "RAM %"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 560
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "gauge",
-                  "mode": "gradient",
-                  "valueDisplayMode": "text"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "showHeader": true,
-        "cellHeight": "md",
-        "footer": {
-          "show": false
-        },
-        "sortBy": [
-          {
-            "displayName": "RAM %",
-            "desc": true
-          }
-        ]
-      }
-    },
-    {
-      "id": 9,
-      "type": "table",
-      "title": "Disko gehien erabili dutenak",
-      "description": "RAM eta biltegiratze iragazkiak aplikatuta. Handitik txikira ordenatuta.",
-      "gridPos": {
-        "x": 0,
-        "y": 24,
-        "w": 24,
-        "h": 10
-      },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "hadesarchitect-cassandra-datasource",
-            "uid": "cassandra"
-          },
-          "target": "SELECT nombre, disco_percent, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
-          "queryType": "query",
-          "format": "table"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": [
-              "nombre"
-            ]
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "mean"
-            ],
-            "mode": "seriesToRows"
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
-              {
-                "field": "Mean",
-                "desc": true
-              }
-            ]
-          }
-        },
-        {
-          "id": "limit",
-          "options": {
-            "limitField": "${topk}"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "Field": "Ordenagailua",
-              "Mean": "Disko %"
-            }
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
           "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -1369,135 +878,101 @@
               }
             ]
           },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            }
-          }
+          "unit": "percent"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenagailua"
+              "options": "Ordenador"
             },
             "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              },
               {
                 "id": "unit",
                 "value": "string"
               },
               {
-                "id": "custom.align",
-                "value": "left"
+                "id": "custom.width",
+                "value": 320
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Diskoa %"
+              "options": "Disco media %"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 560
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              },
-              {
                 "id": "custom.cellOptions",
                 "value": {
-                  "type": "gauge",
                   "mode": "gradient",
+                  "type": "gauge",
                   "valueDisplayMode": "text"
                 }
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
               }
             ]
           }
         ]
       },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 9,
       "options": {
-        "showHeader": true,
-        "cellHeight": "md",
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
+        "showHeader": true,
         "sortBy": [
           {
-            "displayName": "Diskoa %",
-            "desc": true
+            "desc": true,
+            "displayName": "Disco media %"
           }
         ]
-      }
-    },
-    {
-      "id": 10,
-      "type": "table",
-      "title": "Tenperatura altuena dutenak",
-      "description": "RAM eta biltegiratze iragazkiak aplikatuta. Handitik txikira ordenatuta.",
-      "gridPos": {
-        "x": 0,
-        "y": 34,
-        "w": 24,
-        "h": 10
       },
-      "datasource": {
-        "type": "hadesarchitect-cassandra-datasource",
-        "uid": "cassandra"
-      },
+      "pluginVersion": "12.1.0",
       "targets": [
         {
-          "refId": "A",
           "datasource": {
             "type": "hadesarchitect-cassandra-datasource",
             "uid": "cassandra"
           },
-          "target": "SELECT nombre, temperatura, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
+          "datasourceId": 1,
+          "format": "table",
           "queryType": "query",
-          "format": "table"
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
         }
       ],
+      "title": "Top $topk peores — Mayor uso Disco",
       "transformations": [
         {
           "id": "filterByValue",
           "options": {
             "filters": [
               {
-                "fieldName": "ram",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${ram}"
+                    "value": "$ram"
                   }
-                }
+                },
+                "fieldName": "ram"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
@@ -1505,53 +980,44 @@
           "options": {
             "filters": [
               {
-                "fieldName": "almacenamiento",
                 "config": {
                   "id": "regex",
                   "options": {
-                    "value": "${storage}"
+                    "value": "$storage"
                   }
-                }
+                },
+                "fieldName": "almacenamiento"
               }
             ],
-            "type": "include",
-            "match": "all"
+            "match": "all",
+            "type": "include"
           }
         },
         {
-          "id": "organize",
+          "id": "groupBy",
           "options": {
-            "excludeByName": {
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
+            "fields": {
+              "nombre": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "disco_percent": {
+                "aggregations": [
+                  "mean"
+                ],
+                "operation": "aggregate"
+              }
             }
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": [
-              "nombre"
-            ]
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "mean"
-            ],
-            "mode": "seriesToRows"
           }
         },
         {
           "id": "sortBy",
           "options": {
+            "fields": {},
             "sort": [
               {
-                "field": "Mean",
-                "desc": true
+                "desc": true,
+                "field": "disco_percent (mean)"
               }
             ]
           }
@@ -1559,253 +1025,48 @@
         {
           "id": "limit",
           "options": {
-            "limitField": "${topk}"
+            "limitField": "$topk"
           }
         },
         {
           "id": "organize",
           "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "nombre": 0,
+              "disco_percent (mean)": 1
+            },
             "renameByName": {
-              "Field": "Ordenagailua",
-              "Mean": "Tenperatura"
+              "nombre": "Ordenador",
+              "disco_percent (mean)": "Disco media %"
             }
           }
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "decimals": 1,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 65
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            }
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Ordenagailua"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              },
-              {
-                "id": "unit",
-                "value": "string"
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Tenperatura"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 560
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "type": "gauge",
-                  "mode": "gradient",
-                  "valueDisplayMode": "text"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "celsius"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "showHeader": true,
-        "cellHeight": "md",
-        "footer": {
-          "show": false
-        },
-        "sortBy": [
-          {
-            "displayName": "Tenperatura",
-            "desc": true
-          }
-        ]
-      }
+      "type": "table"
     },
     {
-      "id": 11,
-      "type": "table",
-      "title": "Estres altuena dutenak",
-      "description": "RAM eta biltegiratze iragazkiak aplikatuta. Handitik txikira ordenatuta.",
-      "gridPos": {
-        "x": 0,
-        "y": 44,
-        "w": 24,
-        "h": 10
-      },
       "datasource": {
         "type": "hadesarchitect-cassandra-datasource",
         "uid": "cassandra"
       },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "hadesarchitect-cassandra-datasource",
-            "uid": "cassandra"
-          },
-          "target": "SELECT nombre, stress_score, ram, almacenamiento, ts FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING",
-          "rawQuery": true,
-          "queryType": "query",
-          "format": "table"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "ram",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${ram}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "filterByValue",
-          "options": {
-            "filters": [
-              {
-                "fieldName": "almacenamiento",
-                "config": {
-                  "id": "regex",
-                  "options": {
-                    "value": "${storage}"
-                  }
-                }
-              }
-            ],
-            "type": "include",
-            "match": "all"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "ts": true,
-              "ram": true,
-              "almacenamiento": true
-            }
-          }
-        },
-        {
-          "id": "partitionByValues",
-          "options": {
-            "fields": [
-              "nombre"
-            ]
-          }
-        },
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "mean"
-            ],
-            "mode": "seriesToRows"
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
-              {
-                "field": "Mean",
-                "desc": true
-              }
-            ]
-          }
-        },
-        {
-          "id": "limit",
-          "options": {
-            "limitField": "${topk}"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "Field": "Ordenagailua",
-              "Mean": "Estres-puntuazioa"
-            }
-          }
-        }
-      ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
           "decimals": 1,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "orange",
@@ -1813,93 +1074,510 @@
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 85
               }
             ]
           },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            }
-          }
+          "unit": "celsius"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Ordenagailua"
+              "options": "Ordenador"
             },
             "properties": [
-              {
-                "id": "custom.width",
-                "value": 320
-              },
               {
                 "id": "unit",
                 "value": "string"
               },
               {
-                "id": "custom.align",
-                "value": "left"
+                "id": "custom.width",
+                "value": 320
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Estresa"
+              "options": "Temp media °C"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 560
-              },
-              {
-                "id": "custom.align",
-                "value": "left"
-              },
-              {
                 "id": "custom.cellOptions",
                 "value": {
-                  "type": "gauge",
                   "mode": "gradient",
+                  "type": "gauge",
                   "valueDisplayMode": "text"
                 }
-              },
-              {
-                "id": "unit",
-                "value": "short"
-              },
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 100
               }
             ]
           }
         ]
       },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 10,
       "options": {
-        "showHeader": true,
-        "cellHeight": "md",
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
+        "showHeader": true,
         "sortBy": [
           {
-            "displayName": "Estresa",
-            "desc": true
+            "desc": true,
+            "displayName": "Temp media °C"
           }
         ]
-      }
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "datasourceId": 1,
+          "format": "table",
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
+        }
+      ],
+      "title": "Top $topk peores — Mayor Temperatura",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "$ram"
+                  }
+                },
+                "fieldName": "ram"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "$storage"
+                  }
+                },
+                "fieldName": "almacenamiento"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "nombre": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "temperatura": {
+                "aggregations": [
+                  "mean"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "temperatura (mean)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": "$topk"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "nombre": 0,
+              "temperatura (mean)": 1
+            },
+            "renameByName": {
+              "nombre": "Ordenador",
+              "temperatura (mean)": "Temp media °C"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "cassandra"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 60
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ordenador"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.width",
+                "value": 320
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Estres medio"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge",
+                  "valueDisplayMode": "text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Estres medio"
+          }
+        ]
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "cassandra"
+          },
+          "datasourceId": 1,
+          "format": "table",
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT * FROM mediciones WHERE empresa_id = $empresa AND ts > $__timeFrom AND ts < $__timeTo ALLOW FILTERING"
+        }
+      ],
+      "title": "Top $topk peores — Mayor Estres",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "$ram"
+                  }
+                },
+                "fieldName": "ram"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "$storage"
+                  }
+                },
+                "fieldName": "almacenamiento"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "nombre": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "stress_score": {
+                "aggregations": [
+                  "mean"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "stress_score (mean)"
+              }
+            ]
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": "$topk"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "nombre": 0,
+              "stress_score (mean)": 1
+            },
+            "renameByName": {
+              "nombre": "Ordenador",
+              "stress_score (mean)": "Estres medio"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
-  ]
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 41,
+  "tags": [
+    "webhardmon",
+    "empresa",
+    "cassandra"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
+        "hide": 2,
+        "label": "Empresa",
+        "name": "empresa",
+        "query": "1",
+        "skipUrlSync": true,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "text": "10",
+          "value": "10"
+        },
+        "label": "Top N",
+        "name": "topk",
+        "options": [
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": true,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          }
+        ],
+        "query": "5,10,15",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "Todas",
+          "value": ".*"
+        },
+        "label": "RAM",
+        "name": "ram",
+        "options": [
+          {
+            "selected": true,
+            "text": "Todas",
+            "value": ".*"
+          },
+          {
+            "selected": false,
+            "text": "8GB",
+            "value": "8GB"
+          },
+          {
+            "selected": false,
+            "text": "16GB",
+            "value": "16GB"
+          },
+          {
+            "selected": false,
+            "text": "32GB",
+            "value": "32GB"
+          },
+          {
+            "selected": false,
+            "text": "64GB",
+            "value": "64GB"
+          }
+        ],
+        "query": ".*,8GB,16GB,32GB,64GB",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "Todas",
+          "value": ".*"
+        },
+        "label": "Almacenamiento",
+        "name": "storage",
+        "options": [
+          {
+            "selected": true,
+            "text": "Todas",
+            "value": ".*"
+          },
+          {
+            "selected": false,
+            "text": "256GB SSD",
+            "value": "256GB SSD"
+          },
+          {
+            "selected": false,
+            "text": "512GB SSD",
+            "value": "512GB SSD"
+          },
+          {
+            "selected": false,
+            "text": "1TB SSD",
+            "value": "1TB SSD"
+          },
+          {
+            "selected": false,
+            "text": "2TB SSD",
+            "value": "2TB SSD"
+          }
+        ],
+        "query": ".*,256GB SSD,512GB SSD,1TB SSD,2TB SSD",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "WebHardMon - Enpresaren panela",
+  "uid": "webhardmon-empresa",
+  "version": 17
 }
