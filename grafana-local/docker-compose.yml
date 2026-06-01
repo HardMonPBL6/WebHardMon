@@ -75,8 +75,35 @@ services:
       MYSQL_ROOT_PASSWORD: rootsecret
     volumes:
       - mysql_data:/var/lib/mysql
+      - ../docker/mysql/matomo-db.sql:/docker-entrypoint-initdb.d/02-matomo-db.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "admin", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  matomo:
+    image: matomo:5
+    container_name: webhardmon-matomo
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      MATOMO_DATABASE_HOST: webhardmon-mysql
+      MATOMO_DATABASE_ADAPTER: mysqli
+      MATOMO_DATABASE_TABLES_PREFIX: matomo_
+      MATOMO_DATABASE_USERNAME: admin
+      MATOMO_DATABASE_PASSWORD: secret
+      MATOMO_DATABASE_DBNAME: matomodb
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - matomo_data:/var/www/html
 
 volumes:
   grafana_data:
   cassandra_data:
   mysql_data:
+  matomo_data:
