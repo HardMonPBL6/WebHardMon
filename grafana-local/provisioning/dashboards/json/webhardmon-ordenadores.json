@@ -14,7 +14,7 @@
   ],
   "timezone": "browser",
   "schemaVersion": 41,
-  "version": 1,
+  "version": 2,
   "refresh": "5s",
   "time": {
     "from": "now-24h",
@@ -339,11 +339,11 @@
               },
               {
                 "color": "orange",
-                "value": 65
+                "value": 70
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 85
               }
             ]
           }
@@ -497,11 +497,11 @@
               },
               {
                 "color": "orange",
-                "value": 70
+                "value": 60
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 80
               }
             ]
           }
@@ -584,6 +584,13 @@
                 "value": 90
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
@@ -666,6 +673,13 @@
                 "value": 90
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
@@ -748,6 +762,13 @@
                 "value": 90
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
@@ -823,13 +844,20 @@
               },
               {
                 "color": "orange",
-                "value": 65
+                "value": 70
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 85
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
@@ -912,6 +940,13 @@
                 "value": 50
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
@@ -987,13 +1022,20 @@
               },
               {
                 "color": "orange",
-                "value": 70
+                "value": 60
               },
               {
                 "color": "red",
-                "value": 90
+                "value": 80
               }
             ]
+          },
+          "min": 0,
+          "max": 100,
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
           }
         },
         "overrides": []
