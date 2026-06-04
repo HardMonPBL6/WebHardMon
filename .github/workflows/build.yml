@@ -22,9 +22,6 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      - name: Clear Maven cache
-        run: rm -rf ~/.m2/repository/org/sonarsource/scanner/maven
-
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
