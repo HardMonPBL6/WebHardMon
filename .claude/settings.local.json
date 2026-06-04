@@ -7,7 +7,14 @@
       "Bash(mysql -h localhost -P 3307 -u admin -psecret telemetriadb -e \"SELECT id, username, super_admin FROM administrador;\")",
       "Bash(where mysql *)",
       "Bash(python -c \"import bcrypt; h = bcrypt.hashpw\\(b'WHM@Admin2024!', bcrypt.gensalt\\(12\\)\\); print\\(h.decode\\(\\)\\)\")",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\User\\\\OneDrive\\\\Desktop\\\\PBL6_Web\\\\WebHardMon\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(cat)",
+      "Read(//tmp/**)",
+      "Bash(cd \"/c/Users/User/OneDrive/Desktop/PBL6_Web/WebHardMon\" && grep -r \"import lombok\" src/ 2>/dev/null | wc -l)",
+      "Read(//c/c/Users/User/OneDrive/Desktop/PBL6_Web/WebHardMon/**)"
     ]
   }
 }
