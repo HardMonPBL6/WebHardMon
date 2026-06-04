@@ -19,11 +19,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
-           .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/css/**", "/js/**", "/login").permitAll()
-            .requestMatchers("/api/agente/**").permitAll()
-            .anyRequest().authenticated()
-        )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/css/**", "/js/**", "/login").permitAll()
+                .requestMatchers("/api/agente/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("SUPERADMIN")
+                .anyRequest().authenticated()
+            )
             .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/dashboard", true)

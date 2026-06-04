@@ -21,6 +21,8 @@ spring:
     password: ${CASSANDRA_PASSWORD:cassandra}
 
 app:
+  admin:
+    password: ${ADMIN_PASSWORD}
   grafana:
     dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     empresa-dashboard-url: ${GRAFANA_EMPRESA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}

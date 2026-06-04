@@ -11,22 +11,34 @@ import com.telemetria.web.repository.LicenciaRepository;
 import com.telemetria.web.repository.UsuarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DatabaseSeeder {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseSeeder.class);
 
+    @Value("${app.admin.password}")
+    private String adminPassword;
+
     @Bean
     CommandLineRunner initDatabase(EmpresaRepository empresaRepo,
                                    AdministradorRepository adminRepo,
                                    UsuarioRepository usuarioRepo,
                                    LicenciaRepository licenciaRepo,
-                                   CqlSession cqlSession) {
+                                   CqlSession cqlSession,
+                                   PasswordEncoder passwordEncoder) {
         return args -> {
+
+            if (adminPassword == null || adminPassword.length() < 12) {
+                throw new IllegalStateException(
+                    "ADMIN_PASSWORD debe tener al menos 12 caracteres. Configura la variable de entorno ADMIN_PASSWORD."
+                );
+            }
 
             // ── Crear empresa, admin y usuario de prueba si no existen ──────
             if (empresaRepo.count() == 0) {
@@ -39,8 +51,9 @@ public class DatabaseSeeder {
                 // Administrador web (puede iniciar sesion en el panel)
                 Administrador admin = new Administrador();
                 admin.setUsername("admin");
-                admin.setPassword("{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC");
+                admin.setPassword(passwordEncoder.encode(adminPassword));
                 admin.setEmpresa(empresa);
+                admin.setSuperAdmin(true);
                 adminRepo.save(admin);
 
                 // Usuario de prueba con ordenador (sin acceso web)
@@ -58,7 +71,7 @@ public class DatabaseSeeder {
                 licenciaRepo.save(licencia);
 
                 log.info("====== DATOS DE PRUEBA CREADOS ======");
-                log.info("Admin web  -> usuario: admin / contrasena: test");
+                log.info("Admin web  -> usuario: admin / contrasena: [ver ADMIN_PASSWORD en .env]");
                 log.info("Usuario    -> nombre: Usuario Prueba / ordenador: PC-TEST");
                 log.info("Licencia   -> WHM-TEST-TEST-TEST-AABB (activa)");
                 log.info("Empresa    -> Acme Corp (id=1)");

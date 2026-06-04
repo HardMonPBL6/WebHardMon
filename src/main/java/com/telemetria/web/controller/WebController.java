@@ -77,6 +77,7 @@ public class WebController {
         model.addAttribute("seccionActiva",   "empresa");
         model.addAttribute("dashboardTitulo", "Enpresaren panela");
         model.addAttribute("portatiles",      List.of());
+        model.addAttribute("isSuperAdmin",    principal.isSuperAdmin());
         return "layout";
     }
 
@@ -92,6 +93,7 @@ public class WebController {
         model.addAttribute("seccionActiva",   "ordenadores");
         model.addAttribute("dashboardTitulo", "Ordenagailuen panela");
         model.addAttribute("portatiles",      cassandraTelemetryService.findNombresByEmpresa(empresaId));
+        model.addAttribute("isSuperAdmin",    principal.isSuperAdmin());
         return "layout";
     }
 
@@ -147,6 +149,7 @@ public class WebController {
         model.addAttribute("empresaId",            empresaId);
         model.addAttribute("seccionActiva",        "licencias");
         model.addAttribute("dashboardTitulo",      "Lizentziak");
+        model.addAttribute("isSuperAdmin",         principal.isSuperAdmin());
         return "licencias";
     }
 
