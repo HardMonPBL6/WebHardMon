@@ -39,8 +39,9 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=HardMonPBL6_WebHardMon \
-          -Dsonar.organization=hardmonpbl6 \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+run: mvn -B verify sonar:sonar \
+  -Dsonar.projectKey=HardMonPBL6_WebHardMon \
+  -Dsonar.organization=hardmonpbl6 \
+  -Dsonar.host.url=https://sonarcloud.io \
+  -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+
