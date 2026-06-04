@@ -25,6 +25,9 @@ app:
     dashboard-url: ${GRAFANA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     empresa-dashboard-url: ${GRAFANA_EMPRESA_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-empresa/webhardmon-empresa}
     ordenadores-dashboard-url: ${GRAFANA_ORDENADORES_DASHBOARD_URL:http://localhost:3000/d-solo/webhardmon-ordenadores/webhardmon-ordenadores}
+  hbase:
+    rest-url: ${HBASE_REST_URL:http://10.0.0.30:8085}
+    table: ${HBASE_TABLE:webhardmon_hourly}
 
 server:
   port: 8080

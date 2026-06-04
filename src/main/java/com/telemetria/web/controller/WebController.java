@@ -1,6 +1,7 @@
 package com.telemetria.web.controller;
 
 import com.telemetria.web.model.Empresa;
+import com.telemetria.web.model.HourlyAggregateDTO;
 import com.telemetria.web.model.Licencia;
 import com.telemetria.web.model.Usuario;
 import com.telemetria.web.repository.EmpresaRepository;
@@ -9,6 +10,8 @@ import com.telemetria.web.repository.UsuarioRepository;
 import com.telemetria.web.security.AdminPrincipal;
 import com.telemetria.web.service.CassandraTelemetryService;
 import com.telemetria.web.service.GrafanaService;
+import com.telemetria.web.service.HBaseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.dao.DataAccessException;
@@ -35,17 +39,20 @@ public class WebController {
 
     private final GrafanaService grafanaService;
     private final CassandraTelemetryService cassandraTelemetryService;
+    private final HBaseService hBaseService;
     private final LicenciaRepository licenciaRepository;
     private final UsuarioRepository usuarioRepository;
     private final EmpresaRepository empresaRepository;
 
     public WebController(GrafanaService grafanaService,
                          CassandraTelemetryService cassandraTelemetryService,
+                         HBaseService hBaseService,
                          LicenciaRepository licenciaRepository,
                          UsuarioRepository usuarioRepository,
                          EmpresaRepository empresaRepository) {
         this.grafanaService = grafanaService;
         this.cassandraTelemetryService = cassandraTelemetryService;
+        this.hBaseService = hBaseService;
         this.licenciaRepository = licenciaRepository;
         this.usuarioRepository = usuarioRepository;
         this.empresaRepository = empresaRepository;
@@ -86,6 +93,19 @@ public class WebController {
         model.addAttribute("dashboardTitulo", "Ordenagailuen panela");
         model.addAttribute("portatiles",      cassandraTelemetryService.findNombresByEmpresa(empresaId));
         return "layout";
+    }
+
+    // ── Histórico HBase ──────────────────────────────────────────────────────
+
+    @GetMapping("/api/historico")
+    @ResponseBody
+    public ResponseEntity<List<HourlyAggregateDTO>> historico(
+            @AuthenticationPrincipal AdminPrincipal principal,
+            @RequestParam(defaultValue = "7") int days) {
+        if (principal == null) return ResponseEntity.status(401).build();
+        List<HourlyAggregateDTO> data = hBaseService.getRecentAggregates(
+                principal.getEmpresaId(), days);
+        return ResponseEntity.ok(data);
     }
 
     // ── Licencias y usuarios ─────────────────────────────────────────────────
