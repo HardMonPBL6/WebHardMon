@@ -15,11 +15,13 @@ public class AdminPrincipal implements UserDetails {
     private final String password;
     private final Long empresaId;
     private final String empresaNombre;
+    private final boolean superAdmin;
 
     public AdminPrincipal(Administrador admin) {
         this.id = admin.getId();
         this.username = admin.getUsername();
         this.password = admin.getPassword();
+        this.superAdmin = admin.isSuperAdmin();
 
         if (admin.getEmpresa() == null) {
             throw new IllegalStateException("El administrador no tiene empresa asociada");
@@ -41,8 +43,18 @@ public class AdminPrincipal implements UserDetails {
         return empresaNombre;
     }
 
+    public boolean isSuperAdmin() {
+        return superAdmin;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (superAdmin) {
+            return List.of(
+                new SimpleGrantedAuthority("ROLE_SUPERADMIN"),
+                new SimpleGrantedAuthority("ROLE_ADMIN")
+            );
+        }
         return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 

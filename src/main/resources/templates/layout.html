@@ -61,6 +61,10 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
                 Lizentziak
             </a>
+            <a th:if="${isSuperAdmin}" th:href="@{/admin/usuarios}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" th:classappend="${seccionActiva == 'adminUsuarios'} ? ' bg-blue-600/10 text-blue-400' : ' hover:bg-gray-800 text-gray-400 hover:text-white'">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Administratzaileak
+            </a>
         </nav>
     </aside>
 
@@ -207,6 +211,29 @@
                 </div>
             </div>
 
+            <!-- Tendencias historikoak (HBase, solo empresa) -->
+            <div th:if="${dashboardTipo == 'empresa'}" class="bg-darkPanel rounded-xl border border-gray-800 shadow-lg p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-200">Tendencias historikoak</h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Orduko batezbestekoak HBase-tik · Azken 30 eguneko datuak</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Tartea:</span>
+                        <select id="selectHistoricoRange" onchange="loadHistorico(this.value)"
+                                class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
+                            <option value="1">Azken 24 orduak</option>
+                            <option value="7" selected>Azken 7 egunak</option>
+                            <option value="30">Azken 30 egunak</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="historico-loading" class="hidden text-center py-8">
+                    <span class="text-gray-500 text-sm">Kargatzen...</span>
+                </div>
+                <div id="historico-table-container" class="overflow-x-auto min-h-[60px]"></div>
+            </div>
+
             <!-- Ordenagailuak: hautatutako ordenagailuaren historikoak -->
             <div th:if="${dashboardTipo == 'ordenadores'}" class="space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -326,6 +353,9 @@
             if (dashboardTipo === 'ordenadores') {
                 populateLaptops();
             }
+            if (dashboardTipo === 'empresa') {
+                loadHistorico(7);
+            }
             updatePanela();
         });
 
@@ -374,6 +404,132 @@
                 iframe.src = url.toString();
             });
         }
+        // ── Tendencias historikoak (HBase) ───────────────────────────────────
+
+        async function loadHistorico(days) {
+            const loading   = document.getElementById('historico-loading');
+            const container = document.getElementById('historico-table-container');
+            if (!loading || !container) return;
+
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
+
+            try {
+                const resp = await fetch('/api/historico?days=' + days);
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                renderHistorico(data, parseInt(days));
+            } catch (e) {
+                container.innerHTML = '<p class="text-gray-500 text-sm py-4 text-center">Ezin izan da historia kargatu. Egiaztatu HBase konexioa.</p>';
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function renderHistorico(data, days) {
+            const container = document.getElementById('historico-table-container');
+            if (!container) return;
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm py-4 text-center">Ez dago datu historikorik aukeratutako tartean.</p>';
+                return;
+            }
+
+            const isHourly  = days === 1;
+            const displayRows = isHourly ? data : groupHistoricoByDay(data);
+
+            let html = '<table class="text-xs text-left border-collapse">'
+                + '<thead>'
+                + '<tr class="text-gray-400">'
+                + '<th rowspan="2" class="pb-1 pr-6 font-semibold align-bottom border-b border-gray-700">' + (isHourly ? 'Ordua' : 'Eguna') + '</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">CPU (%)</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">RAM (%)</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">Diskoa (%)</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">Tenp. (°C)</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">Bateria (%)</th>'
+                + '<th colspan="3" class="pb-1 px-3 font-semibold text-center border-b border-gray-600">Estresa</th>'
+                + '<th rowspan="2" class="pb-1 pl-4 font-semibold align-bottom border-b border-gray-700 text-right">Gailuak</th>'
+                + '</tr>'
+                + '<tr class="text-gray-500">'
+                + ['CPU','RAM','Sto','Tmp','Bat','Str'].map(function() {
+                    return '<th class="py-1 px-3 font-medium text-center">avg</th>'
+                         + '<th class="py-1 px-3 font-medium text-center">min</th>'
+                         + '<th class="py-1 px-3 font-medium text-center border-r border-gray-800">max</th>';
+                  }).join('')
+                + '</tr>'
+                + '</thead>'
+                + '<tbody class="divide-y divide-gray-800/50">';
+
+            displayRows.forEach(function(r) {
+                html += '<tr class="hover:bg-gray-800/20 transition-colors">'
+                    + '<td class="py-2 pr-6 text-gray-300 font-mono whitespace-nowrap">' + fmtSlot(r.slot, isHourly) + '</td>'
+                    + td(r.cpuAvg, 60, 80, '%') + tdN(r.cpuMin, '%') + tdNB(r.cpuMax, '%')
+                    + td(r.ramAvg, 60, 80, '%') + tdN(r.ramMin, '%') + tdNB(r.ramMax, '%')
+                    + td(r.stoAvg, 70, 90, '%') + tdN(r.stoMin, '%') + tdNB(r.stoMax, '%')
+                    + td(r.tmpAvg, 65, 80, '°C') + tdN(r.tmpMin, '°C') + tdNB(r.tmpMax, '°C')
+                    + td(r.batAvg, 0, 0, '%') + tdN(r.batMin, '%') + tdNB(r.batMax, '%')
+                    + td(r.strAvg, 40, 70, '') + tdN(r.strMin, '') + tdNB(r.strMax, '')
+                    + '<td class="py-2 pl-4 text-gray-400 text-right">' + r.count + '</td>'
+                    + '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function fmtVal(v) {
+            return (v != null && !isNaN(v)) ? v.toFixed(1) : '—';
+        }
+
+        function fmtSlot(slot, isHourly) {
+            var y = slot.substring(0, 4), mo = slot.substring(4, 6), d = slot.substring(6, 8);
+            if (isHourly) return y + '/' + mo + '/' + d + ' ' + slot.substring(8, 10) + ':00';
+            return y + '/' + mo + '/' + d;
+        }
+
+        function mColor(v, warn, crit) {
+            if (!warn && !crit) return 'text-gray-300';
+            if (v == null || isNaN(v)) return 'text-gray-500';
+            if (v >= crit) return 'text-red-400';
+            if (v >= warn) return 'text-yellow-400';
+            return 'text-green-400';
+        }
+
+        // td con color (avg), td neutro (min), td neutro con borde derecho (max)
+        function td(v, warn, crit, unit) {
+            return '<td class="py-2 px-3 text-center ' + mColor(v, warn, crit) + '">' + fmtVal(v) + unit + '</td>';
+        }
+        function tdN(v, unit) {
+            return '<td class="py-2 px-3 text-center text-gray-500">' + fmtVal(v) + unit + '</td>';
+        }
+        function tdNB(v, unit) {
+            return '<td class="py-2 px-3 text-center text-gray-500 border-r border-gray-800">' + fmtVal(v) + unit + '</td>';
+        }
+
+        function groupHistoricoByDay(data) {
+            var map = {};
+            data.forEach(function(r) {
+                var day = r.slot.substring(0, 8);
+                if (!map[day]) map[day] = { rows: [], count: 0 };
+                map[day].rows.push(r);
+                map[day].count += r.count;
+            });
+            return Object.keys(map).sort().map(function(day) {
+                var g = map[day];
+                var w = g.count || 1;
+                function wa(f) { return g.rows.reduce(function(s,r){ return s+(r[f]||0)*r.count; },0)/w; }
+                function mn(f) { return Math.min.apply(null, g.rows.map(function(r){ return r[f]||0; })); }
+                function mx(f) { return Math.max.apply(null, g.rows.map(function(r){ return r[f]||0; })); }
+                return { slot: day,
+                    cpuAvg: wa('cpuAvg'), cpuMin: mn('cpuMin'), cpuMax: mx('cpuMax'),
+                    ramAvg: wa('ramAvg'), ramMin: mn('ramMin'), ramMax: mx('ramMax'),
+                    stoAvg: wa('stoAvg'), stoMin: mn('stoMin'), stoMax: mx('stoMax'),
+                    tmpAvg: wa('tmpAvg'), tmpMin: mn('tmpMin'), tmpMax: mx('tmpMax'),
+                    batAvg: wa('batAvg'), batMin: mn('batMin'), batMax: mx('batMax'),
+                    strAvg: wa('strAvg'), strMin: mn('strMin'), strMax: mx('strMax'),
+                    count: g.count };
+            });
+        }
+
         /*]]>*/
     </script>
 </body>

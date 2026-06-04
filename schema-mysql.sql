@@ -23,14 +23,16 @@ CREATE TABLE IF NOT EXISTS empresa (
 
 -- ------------------------------------------------------------
 -- 2. administrador
---    Usuario con acceso al panel web (rol ADMIN).
---    Solo estos pueden iniciar sesion en la aplicacion web.
+--    Usuario con acceso al panel web.
+--    super_admin=1: solo la empresa propietaria, puede crear/borrar admins.
+--    super_admin=0: admin de cliente, acceso de solo lectura al panel.
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS administrador (
-    id         BIGINT       NOT NULL AUTO_INCREMENT,
-    username   VARCHAR(255) NOT NULL,
-    password   VARCHAR(255) NOT NULL,
-    empresa_id BIGINT       NOT NULL,
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    username    VARCHAR(255) NOT NULL,
+    password    VARCHAR(255) NOT NULL,
+    empresa_id  BIGINT       NOT NULL,
+    super_admin TINYINT(1)   NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT uk_administrador_username UNIQUE (username),
     CONSTRAINT fk_administrador_empresa
@@ -79,14 +81,12 @@ CREATE TABLE IF NOT EXISTS licencia (
 
 -- ------------------------------------------------------------
 -- Datos iniciales de prueba (opcionales)
--- Contrasena del admin: test
+-- NOTA: El admin se crea automaticamente al arrancar la app usando
+-- la variable de entorno ADMIN_PASSWORD. No insertar aqui directamente.
+-- Si necesitas insertar manualmente, genera el hash con:
+--   spring security PasswordEncoder o bcrypt online, strength 12
 -- ------------------------------------------------------------
 INSERT IGNORE INTO empresa (id, nombre) VALUES (1, 'Acme Corp');
-
-INSERT IGNORE INTO administrador (id, username, password, empresa_id)
-VALUES (1, 'admin',
-        '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC',
-        1);
 
 INSERT IGNORE INTO usuario (id, nombre, nombre_ordenador, empresa_id)
 VALUES (1, 'Usuario Prueba', 'PC-TEST', 1);
