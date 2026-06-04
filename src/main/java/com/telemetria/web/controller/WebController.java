@@ -68,6 +68,7 @@ public class WebController {
     @GetMapping({"/", "/dashboard", "/dashboard/empresa"})
     public String dashboardEmpresa(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
         if (principal == null) return "redirect:/login";
+        if (principal.isSuperAdmin()) return "redirect:/admin/usuarios";
         Long empresaId = principal.getEmpresaId();
 
         model.addAttribute("grafanaIframeUrl", grafanaService.buildEmpresaDashboardUrl(empresaId));
@@ -84,6 +85,7 @@ public class WebController {
     @GetMapping("/dashboard/ordenadores")
     public String dashboardOrdenadores(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
         if (principal == null) return "redirect:/login";
+        if (principal.isSuperAdmin()) return "redirect:/admin/usuarios";
         Long empresaId = principal.getEmpresaId();
 
         model.addAttribute("grafanaIframeUrl", grafanaService.buildOrdenadoresDashboardUrl(empresaId));
@@ -104,7 +106,7 @@ public class WebController {
     public ResponseEntity<List<HourlyAggregateDTO>> historico(
             @AuthenticationPrincipal AdminPrincipal principal,
             @RequestParam(defaultValue = "7") int days) {
-        if (principal == null) return ResponseEntity.status(401).build();
+        if (principal == null || principal.isSuperAdmin()) return ResponseEntity.status(403).build();
         List<HourlyAggregateDTO> data = hBaseService.getRecentAggregates(
                 principal.getEmpresaId(), days);
         return ResponseEntity.ok(data);
@@ -115,6 +117,7 @@ public class WebController {
     @GetMapping("/licencias")
     public String licencias(@AuthenticationPrincipal AdminPrincipal principal, Model model) {
         if (principal == null) return "redirect:/login";
+        if (principal.isSuperAdmin()) return "redirect:/admin/usuarios";
         Long empresaId = principal.getEmpresaId();
 
         List<Usuario>  usuarios  = usuarioRepository.findByEmpresaIdOrderByNombreAsc(empresaId);

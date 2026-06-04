@@ -27,7 +27,11 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler((request, response, authentication) -> {
+                    boolean isSuperAdmin = authentication.getAuthorities().stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_SUPERADMIN"));
+                    response.sendRedirect(isSuperAdmin ? "/admin/usuarios" : "/dashboard");
+                })
                 .failureUrl("/login?error")
                 .permitAll()
             )
