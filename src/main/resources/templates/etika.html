@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="eu" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebHardMon - Etika eta Jokabide Profesionala</title>
+    <script src="/js/tailwind.cdn.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { darkBg: '#0f172a', darkPanel: '#1e293b' } } }
+        }
+    </script>
+    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//localhost:8081/";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo -->
+</head>
+<body class="bg-darkBg text-gray-200 antialiased h-screen flex overflow-hidden selection:bg-blue-600 selection:text-white">
+
+<!-- Sidebar -->
+<aside class="w-64 bg-darkPanel border-r border-gray-800 flex flex-col">
+    <div class="h-16 flex items-center px-6 border-b border-gray-800">
+        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">WebHardMon</span>
+    </div>
+    <nav class="flex-1 px-4 py-6 space-y-2">
+        <a th:href="@{/dashboard/empresa}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Enpresa
+        </a>
+        <a th:href="@{/dashboard/ordenadores}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Ordenagailuak
+        </a>
+        <a th:href="@{/licencias}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+            Lizentziak
+        </a>
+        <a th:if="${isSuperAdmin}" th:href="@{/admin/usuarios}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-800 text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Administratzaileak
+        </a>
+        <a th:href="@{/etika}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors bg-blue-600/10 text-blue-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Etika
+        </a>
+    </nav>
+</aside>
+
+<!-- Main -->
+<div class="flex-1 flex flex-col min-w-0">
+    <header class="h-16 bg-darkPanel border-b border-gray-800 flex items-center justify-between px-6 z-10">
+        <div class="text-sm font-medium text-gray-400">
+            <span th:if="${empresaNombre != null}">Enpresa: <span class="text-white" th:text="${empresaNombre}">Enpresa</span> · </span>Etika eta Jokabide Profesionala
+        </div>
+        <form th:action="@{/logout}" method="post" class="m-0">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-xs font-semibold text-gray-300 transition-colors hover:border-red-500/60 hover:bg-red-950/40 hover:text-red-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Saioa itxi
+            </button>
+        </form>
+    </header>
+
+    <main class="flex-1 p-6 overflow-auto space-y-6">
+
+        <!-- Page header -->
+        <div>
+            <h1 class="text-2xl font-bold text-white">Etika eta Jokabide Profesionala</h1>
+            <p class="text-sm text-gray-400 mt-1">HardMon proiektua · Hardwarearen monitorizazio-zerbitzu digitala</p>
+            <p class="text-xs text-gray-500 mt-1">Erreferentziak: ACM Code of Ethics and Professional Conduct (2018) · CCII kode deontologikoa</p>
+        </div>
+
+        <!-- Intro -->
+        <section class="bg-darkPanel rounded-xl border border-gray-800 p-6">
+            <h2 class="text-base font-semibold text-white mb-3">1. Aurkezpena eta testuingurua</h2>
+            <p class="text-sm text-gray-300 leading-relaxed">
+                HardMon-ek zerbitzu digital bat eskaintzen die bezero-enpresei: haien ekipo informatikoen hardwarearen egoera eta errendimendua etengabe monitorizatzea, matxurak aurreikusteko eta ekipoen bizitza erabilgarria luzatzeko. Horretarako, bezeroaren langileen ordenagailuetan agente arin bat exekutatzen da, eta hardware-metrikak (PUZaren karga, tenperatura, memoria- eta disko-erabilera, eta abar) nahiz makina/erabiltzaile identifikatzaile bat jasotzen ditu. Telemetria hori azpiegitura hibrido batera bidaltzen da (GCP hodei publikoa eta Cloud lokala, Cloudflare segurtasun-geruzak babestuta), non balioztatu, prozesatu, <span class="font-mono text-blue-300">StressScore</span> izeneko adierazle batez aberastu eta biltegiratzen den; azkenik, bezeroari kontrol-panel baten bidez aurkezten zaizkio emaitzak.
+            </p>
+            <p class="text-sm text-gray-300 leading-relaxed mt-3">
+                Zerbitzu honek hirugarren pertsonen ekipoetatik datozen datuak tratatzen dituenez —eta, bereziki, lan-harreman baten testuinguruan—, gure ardura etikoa areagotu egiten da. Langileen ekipoen monitorizazioak datu pertsonalak, intimitatea eta enpresaren eta langilearen arteko botere-asimetria ukitzen ditu zuzenean. Hori dela eta, jardunbide profesional honek erreferentzia gisa hartzen ditu ACM-ren etika-kodea eta CCII-ren kode deontologikoa, eta gure testuinguru zehatzera egokitzen ditu.
+            </p>
+        </section>
+
+        <!-- Principles -->
+        <section class="bg-darkPanel rounded-xl border border-gray-800 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800">
+                <h2 class="text-base font-semibold text-white">2. Printzipio etikoak</h2>
+                <p class="text-xs text-gray-400 mt-1">ACM Code of Ethics-en oinarrizko atalei (1. eta 2. ataletako printzipio orokorrei eta lanbide-ardurei) lotutako printzipioak</p>
+            </div>
+            <div class="divide-y divide-gray-800">
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.1</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.1. Gizartearen eta pertsonen ongizatearen aldeko ekarpena</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Gure helburua bezeroari balio erreala ematea da: matxurak aurreikusiz baliabideak aurreztea eta ekipoen bizitza luzatuz hondakin elektronikoak murriztea. Konpromisoa hartzen dugu sistema xede horretarako erabiltzeko, eta ez langileak presionatzeko edo haien gainean kontrol gehiegizkoa ezartzeko tresna gisa. <span class="font-mono text-blue-300">StressScore</span> adierazlea hardwarearen estresa neurtzeko diseinatu da, ez pertsonen errendimendua epaitzeko.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.2</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.2. Kalterik ez eragitea</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Monitorizazioak kalte sor diezaieke langileei, datuak haien aurka erabiliz gero (zaintza, sailkapenak, zigorrak). Kalte hori prebenitzeko, neurri teknikoak eta antolakuntzazkoak hartu ditugu: bildutako datuak hardwarera mugatzen dira (datu-minimizazioa), eta ez dugu erabiltzailearen jardueraren edo edukien jarraipenik egiten (ez teklatua, ez nabigazioa, ez pantaila).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.3</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.3. Zintzotasuna eta fidagarritasuna</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Garatzen dugun sistemaren mugak eta gaitasunak modu gardenean azaltzen ditugu. Erabilgarritasun-probetan eta emaitzetan ez dugu inolako daturik faltsutzen edo apaintzen: emaitza errealak baino ez ditugu erabiltzen erabakiak hartzeko, eta horixe da gure HMI ebaluazioaren oinarria.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.4</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.4. Justizia eta diskriminaziorik eza</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Sistemak langile guztiak modu berean tratatu behar ditu, eta ezin du diskriminaziorako edo banakako sailkapenetarako bide eman. Horregatik, panel nagusietan datuak ekipo- edo talde-mailan agregatuta aurkezten dira lehenetsita, eta banakako ikuspegia sarbide-kontrol zorrotzaren mende dago. Era berean, zerbitzua pertsona guztientzat eskuragarri egotea bilatzen dugu, irisgarritasuna bermatuz.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.6</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.5. Pribatutasunaren errespetua</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Pribatutasuna gure diseinuaren printzipio gidaria da (<span class="italic">privacy by design</span>). Datu-minimizazioa aplikatzen dugu, makina/erabiltzaile identifikatzaileak pseudonimizatzen ditugu ahal den neurrian, eta atxikitze-epe mugatuak ezartzen ditugu. Datu pertsonalen tratamendua Datuak Babesteko Erregelamendu Orokorrera (DBEO/RGPD) egokitzen dugu, oinarri juridiko egokia eta gardentasun-betebeharrak errespetatuz.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-blue-900/40 border border-blue-700/50 px-2 py-0.5 text-xs font-mono text-blue-300">ACM 1.7</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.6. Konfidentzialtasuna</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Bezeroaren datuak —telemetria, lizentzia-informazioa eta enpresaren konfigurazioa barne— konfidentzialak dira. Sarbidea behar dutenei baino ez zaie ematen, eta ez ditugu hirugarrenei lagatzen edo helburu komertzialetarako berrerabiltzen. Lizentzia balioztatzeko prozesuan tratatzen den informazioa ere xede horretara mugatzen da.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-indigo-900/40 border border-indigo-700/50 px-2 py-0.5 text-xs font-mono text-indigo-300">ACM 2.1–2.2</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.7. Kalitate eta gaitasun profesionala</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Lan profesionala kalitate handiz egitea gure ardura da. Kodearen segurtasun-auditoretzak egiten ditugu tresna espezializatuekin (SonarQube, Snyk edo Semgrep), antzemandako akatsak zuzentzen ditugu, eta garapen-jardunbide egokiak definitzen ditugu akatsak berriz ager ez daitezen. Halaber, karga- eta estres-probak egiten ditugu osagai kritikoenen gainean.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-5">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 shrink-0 inline-flex items-center rounded-full bg-indigo-900/40 border border-indigo-700/50 px-2 py-0.5 text-xs font-mono text-indigo-300">ACM 2.5–2.9</span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-white">2.8. Ebaluazio sendoak eta arriskuen kudeaketa</h3>
+                            <p class="text-sm text-gray-400 mt-1 leading-relaxed">Sistema osoaren ebaluazio sendoak egiten ditugu, arriskuen analisi formal batetik abiatuta. Sistema fidagarriak eta seguruak diseinatzen ahalegintzen gara, eta arrisku etiko nahiz teknikoak modu sistematikoan identifikatu, aztertu eta arintzen ditugu.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Security / Privacy / Governance -->
+        <section class="bg-darkPanel rounded-xl border border-gray-800 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-800">
+                <h2 class="text-base font-semibold text-white">3. Segurtasuna, pribatutasuna eta datuen gobernantza</h2>
+                <p class="text-xs text-gray-400 mt-1">Printzipio etikoak babesteko eta betetzeko hartu ditugun neurri konkretuak</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-800">
+
+                <div class="px-6 py-5">
+                    <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        3.1. Segurtasun-neurriak
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Hodeien arteko komunikazioa WireGuard bidez zifratuta (IP publikoaren gainetik ere)</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Cloudflare tunel autentifikatua telemetria sarrerarako (HTTPS + Access token)</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Garraioko (TLS) eta atsedeneko zifratzea, suebakiekin eta sare-segmentazioarekin</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Ostalarien gogortzea: SSH root desgaituta, gako publiko bidezko autentifikazioa, fail2ban/CrowdSec</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Babeskopia-politika eta hondamendien aurreko berreskuratze-plana egiaztatua</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>Fitxategi garrantzitsuen osotasuna kontrolatzeko sistema (AIDE/Tripwire)</li>
+                    </ul>
+                </div>
+
+                <div class="px-6 py-5">
+                    <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        3.2. Pribatutasun-neurriak
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>Datu-minimizazioa: hardware-metrikak baino ez; ez jarduera-, ez edukien, ez kokapenaren jarraipenik</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>Makina/erabiltzaile identifikatzaileen pseudonimizazioa identitate erreala babesteko</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>Atxikitze-epe mugatuak eta datuak ezabatzeko prozedurak automatizatuta</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>Gardentasuna: langileei jakinaraztea zer datu biltzen diren, zertarako eta zenbat denboraz</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>DBEO/RGPD betetzea: oinarri juridikoa, eskubideak eta prozesatzaileekiko bermeak</li>
+                    </ul>
+                </div>
+
+                <div class="px-6 py-5">
+                    <h3 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        3.3. Datuen gobernantza
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"></span>Sarbide-kontrola rol bidez: ikuspegi agregatua lehenetsita, xehetasunerako baimen espezifikoa</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"></span>NiFi-ren jatorri-erregistroa (data provenance) aktibatuta datuen ibilbidea dokumentatzeko</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"></span>Lizentzien eta sarbideen kudeaketa zentralizatua, NiFi-k DB-aren kontra balioztatuta</li>
+                        <li class="flex items-start gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"></span>Datuen erantzukizunaren banaketa argia bezeroaren eta zerbitzu-hornitzailearen artean</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+</body>
+</html>
