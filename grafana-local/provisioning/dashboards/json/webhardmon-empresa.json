@@ -2556,8 +2556,8 @@
         "label": "Enpresa",
         "name": "empresa",
         "query": "1",
-        "skipUrlSync": true,
-        "type": "constant"
+        "skipUrlSync": false,
+        "type": "textbox"
       },
       {
         "current": {

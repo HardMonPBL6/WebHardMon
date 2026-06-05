@@ -210,8 +210,8 @@
     const empresaNuevaDiv = document.getElementById('empresaNuevaDiv');
     const inputEmpresaNueva = document.getElementById('inputEmpresaNueva');
 
-    selectEmpresa.addEventListener('change', function() {
-        if (this.value === '') {
+    function actualizarEmpresaDiv() {
+        if (selectEmpresa.value === '') {
             empresaNuevaDiv.classList.remove('hidden');
             inputEmpresaNueva.required = true;
         } else {
@@ -219,7 +219,10 @@
             inputEmpresaNueva.required = false;
             inputEmpresaNueva.value = '';
         }
-    });
+    }
+
+    selectEmpresa.addEventListener('change', actualizarEmpresaDiv);
+    actualizarEmpresaDiv();
 </script>
 </body>
 </html>

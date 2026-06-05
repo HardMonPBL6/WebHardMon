@@ -25,6 +25,12 @@ public class DatabaseSeeder {
     @Value("${app.admin.password}")
     private String adminPassword;
 
+    @Value("${app.superadmin.username}")
+    private String superadminUsername;
+
+    @Value("${app.superadmin.password}")
+    private String superadminPassword;
+
     @Bean
     CommandLineRunner initDatabase(EmpresaRepository empresaRepo,
                                    AdministradorRepository adminRepo,
@@ -39,9 +45,34 @@ public class DatabaseSeeder {
                     "ADMIN_PASSWORD debe tener al menos 12 caracteres. Configura la variable de entorno ADMIN_PASSWORD."
                 );
             }
+            if (superadminPassword == null || superadminPassword.length() < 12) {
+                throw new IllegalStateException(
+                    "SUPERADMIN_PASSWORD debe tener al menos 12 caracteres. Configura la variable de entorno SUPERADMIN_PASSWORD."
+                );
+            }
+
+            // ── Crear superadmin si no existe ninguno ────────────────────────
+            boolean superadminExiste = adminRepo.findAll().stream()
+                    .anyMatch(Administrador::isSuperAdmin);
+            if (!superadminExiste) {
+                Empresa empresaSuperadmin = new Empresa();
+                empresaSuperadmin.setNombre("WebHardMon");
+                empresaSuperadmin = empresaRepo.save(empresaSuperadmin);
+
+                Administrador superadmin = new Administrador();
+                superadmin.setUsername(superadminUsername);
+                superadmin.setPassword(passwordEncoder.encode(superadminPassword));
+                superadmin.setEmpresa(empresaSuperadmin);
+                superadmin.setSuperAdmin(true);
+                adminRepo.save(superadmin);
+
+                log.info("====== SUPERADMIN CREADO ======");
+                log.info("Usuario: {} / contrasena: [ver SUPERADMIN_PASSWORD en .env]", superadminUsername);
+                log.info("===============================");
+            }
 
             // ── Crear empresa, admin y usuario de prueba si no existen ──────
-            if (empresaRepo.count() == 0) {
+            if (empresaRepo.count() == 1) {
 
                 // Empresa
                 Empresa empresa = new Empresa();
@@ -53,7 +84,7 @@ public class DatabaseSeeder {
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode(adminPassword));
                 admin.setEmpresa(empresa);
-                admin.setSuperAdmin(true);
+                admin.setSuperAdmin(false);
                 adminRepo.save(admin);
 
                 // Usuario de prueba con ordenador (sin acceso web)

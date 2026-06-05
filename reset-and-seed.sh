@@ -98,10 +98,10 @@ INSERT INTO empresa (id, nombre) VALUES
     (3, 'Gamma Solutions');
 
 -- ── Administradores (password bcrypt de "test") ──
-INSERT INTO administrador (id, username, password, empresa_id) VALUES
-    (1, 'admin1', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 1),
-    (2, 'admin2', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 2),
-    (3, 'admin3', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 3);
+INSERT INTO administrador (id, username, password, empresa_id, super_admin) VALUES
+    (1, 'admin1', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 1, 0),
+    (2, 'admin2', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 2, 0),
+    (3, 'admin3', '{bcrypt}$2b$12$Huz.a4s2smRK1xhHfTANf.eeRf12QMAuWqrwz8janrY8N8vtLU3KC', 3, 0);
 
 -- ── Usuarios/Ordenadores — empresa 1 (15 PCs: PC-1-1 .. PC-1-15) ──
 INSERT INTO usuario (nombre, nombre_ordenador, empresa_id) VALUES

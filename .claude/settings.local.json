@@ -14,7 +14,8 @@
       "Bash(cat)",
       "Read(//tmp/**)",
       "Bash(cd \"/c/Users/User/OneDrive/Desktop/PBL6_Web/WebHardMon\" && grep -r \"import lombok\" src/ 2>/dev/null | wc -l)",
-      "Read(//c/c/Users/User/OneDrive/Desktop/PBL6_Web/WebHardMon/**)"
+      "Read(//c/c/Users/User/OneDrive/Desktop/PBL6_Web/WebHardMon/**)",
+      "Bash(bash reset-and-seed.sh)"
     ]
   }
 }

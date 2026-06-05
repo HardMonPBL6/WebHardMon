@@ -24,7 +24,7 @@
     "list": [
       {
         "name": "empresa",
-        "type": "constant",
+        "type": "textbox",
         "query": "1",
         "current": {
           "value": "1",
