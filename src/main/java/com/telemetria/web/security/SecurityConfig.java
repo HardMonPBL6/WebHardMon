@@ -3,11 +3,14 @@ package com.telemetria.web.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -17,8 +20,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler =
+                new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setDefaultTargetUrl("/dashboard");
+        successHandler.setAlwaysUseDefaultTargetUrl(false);
+
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/agente/**"))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/login").permitAll()
                 .requestMatchers("/api/agente/**").permitAll()
@@ -27,11 +35,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .successHandler((request, response, authentication) -> {
-                    boolean isSuperAdmin = authentication.getAuthorities().stream()
-                            .anyMatch(a -> a.getAuthority().equals("ROLE_SUPERADMIN"));
-                    response.sendRedirect(isSuperAdmin ? "/admin/usuarios" : "/dashboard");
-                })
+                .successHandler(successHandler)
                 .failureUrl("/login?error")
                 .permitAll()
             )
