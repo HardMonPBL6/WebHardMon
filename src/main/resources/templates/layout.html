@@ -99,11 +99,11 @@
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">RAM:</span>
                     <select id="selectRam" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
-                        <option value=".*">Guztiak</option>
-                        <option value="8GB">8 GB</option>
-                        <option value="16GB">16 GB</option>
-                        <option value="32GB">32 GB</option>
-                        <option value="64GB">64 GB</option>
+                        <option value="$__all">Guztiak</option>
+                        <option value="8 GB">8 GB</option>
+                        <option value="16 GB">16 GB</option>
+                        <option value="32 GB">32 GB</option>
+                        <option value="64 GB">64 GB</option>
                     </select>
                 </div>
                 <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
@@ -112,11 +112,11 @@
                 <div class="flex items-center gap-2" th:if="${dashboardTipo == 'empresa'}">
                     <span class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Diskoa:</span>
                     <select id="selectStorage" onchange="updatePanela()" class="bg-darkBg text-gray-200 border border-gray-800 rounded-lg px-3 py-1.5 text-xs font-medium focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all cursor-pointer">
-                        <option value=".*">Guztiak</option>
-                        <option value="256GB SSD">256 GB SSD</option>
-                        <option value="512GB SSD">512 GB SSD</option>
-                        <option value="1TB SSD">1 TB SSD</option>
-                        <option value="2TB SSD">2 TB SSD</option>
+                        <option value="$__all">Guztiak</option>
+                        <option value="238 GB">256 GB</option>
+                        <option value="476 GB">512 GB</option>
+                        <option value="953 GB">1024 GB</option>
+                        <option value="1907 GB">2048 GB</option>
                     </select>
                 </div>
                 <div class="h-4 w-px bg-gray-800" th:if="${dashboardTipo == 'empresa'}"></div>
@@ -382,8 +382,8 @@
         function updatePanela() {
             const timeValue = document.getElementById('selectTime')?.value || (dashboardTipo === 'empresa' ? 'now-30d' : 'now-24h');
             const portatilValue = document.getElementById('selectPortatil')?.value || (laptops[0]?.name || '');
-            const ramValue = document.getElementById('selectRam')?.value || '.*';
-            const storageValue = document.getElementById('selectStorage')?.value || '.*';
+            const ramValue = document.getElementById('selectRam')?.value || '$__all';
+            const storageValue = document.getElementById('selectStorage')?.value || '$__all';
             const topKValue = document.getElementById('selectTopK')?.value || '10';
             const ordenValue = document.getElementById('selectOrden')?.value || 'beheranzko';
             updateTopPanelHeights();
