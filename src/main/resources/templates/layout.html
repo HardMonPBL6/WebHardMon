@@ -378,6 +378,25 @@
             });
         }
 
+        // Valores concretos de cada filtro (mismos que los <option> del desplegable).
+        // "Guztiak" se expande a esta lista: NUNCA mandamos var-ram=$__all en la URL,
+        // porque $__all + :singlequote en el IN(...) del dashboard no se resuelve en la
+        // carga inicial y la query sale vacia. Mandar los valores reales evita el bug.
+        const RAM_VAR_VALUES     = ['8 GB', '16 GB', '32 GB', '64 GB'];
+        const STORAGE_VAR_VALUES = ['238 GB', '476 GB', '953 GB', '1907 GB'];
+
+        // Fija una variable multi-valor de Grafana en la URL. Si el valor es "$__all"
+        // (Guztiak), la expande a la lista concreta repitiendo el parametro
+        // (var-ram=8 GB&var-ram=16 GB&...), que es como Grafana recibe un multi-select.
+        function setGrafanaMultiVar(url, key, value, allValues) {
+            url.searchParams.delete(key);
+            if (value === '$__all') {
+                allValues.forEach(v => url.searchParams.append(key, v));
+            } else {
+                url.searchParams.append(key, value);
+            }
+        }
+
         // Berriro kargatu iframe guztiak hautatutako iragazki berriekin
         function updatePanela() {
             const timeValue = document.getElementById('selectTime')?.value || (dashboardTipo === 'empresa' ? 'now-30d' : 'now-24h');
@@ -399,8 +418,8 @@
                 }
 
                 if (dashboardTipo === 'empresa') {
-                    url.searchParams.set('var-ram', ramValue);
-                    url.searchParams.set('var-storage', storageValue);
+                    setGrafanaMultiVar(url, 'var-ram', ramValue, RAM_VAR_VALUES);
+                    setGrafanaMultiVar(url, 'var-storage', storageValue, STORAGE_VAR_VALUES);
                     url.searchParams.set('var-topk', topKValue);
                     if (iframe.closest('.top-panel')) {
                         const pid = parseInt(url.searchParams.get('panelId'), 10);
