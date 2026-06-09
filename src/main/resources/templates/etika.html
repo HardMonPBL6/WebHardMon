@@ -12,18 +12,20 @@
         }
     </script>
     <!-- Matomo -->
-    <script>
+    <th:block th:if="${matomoUrl}">
+    <script th:inline="javascript">
         var _paq = window._paq = window._paq || [];
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
-            var u="//localhost:8081/";
+            var u=/*[[${matomoUrl}]]*/ "//localhost:8081/";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
             _paq.push(['setSiteId', '1']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
             g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
         })();
     </script>
+    </th:block>
     <!-- End Matomo -->
 </head>
 <body class="bg-darkBg text-gray-200 antialiased h-screen flex overflow-hidden selection:bg-blue-600 selection:text-white">

@@ -33,6 +33,11 @@ app:
   hbase:
     rest-url: ${HBASE_REST_URL:http://10.0.0.30:8085}
     table: ${HBASE_TABLE:webhardmon_hourly}
+  matomo:
+    # URL pública de Matomo (con barra final), p.ej. https://matomo.example.com/
+    # Vacío = no se inyecta el snippet de tracking. La descarga matomo.js/matomo.php
+    # el navegador del usuario, así que NO puede ser localhost en producción.
+    url: ${MATOMO_URL:}
 
 server:
   port: 8080
